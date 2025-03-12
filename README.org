@@ -1,0 +1,6 @@
+#+TITLE: Configuration Files
+#+DESCRIPTION: Various configuration files for Linux based systems.
+#+AUTHOR: Dean Smith
+#+DATE: Wed Mar 12 2025
+
+This repository contains various configuration files for Linux based systems.
