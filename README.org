@@ -6,7 +6,7 @@
 This repository contains various configuration files for Linux based systems.
 
 ** Window Manager
-[[https://github.com/mistersaturn/dotfiles/master/.config/awesome][awesomeWM Configuration / Default Themes]]
+[[https://github.com/mistersaturn/dotfiles/tree/master/.config/awesome][AwesomeWM Configuration / Default Themes]]
 
 ** Emacs
 [[https://github.com/mistersaturn/dotfiles/tree/master/.config/doom][Doom Emacs Configuration / Package / Init Files]]
