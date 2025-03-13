@@ -20,4 +20,3 @@ This repository contains various configuration files for Linux based systems.
 ** Terminal / Shell
 [[https://github.com/mistersaturn/dotfiles/blob/master/.bashrc][Bash Configuration File]]
 [[https://github.com/mistersaturn/dotfiles/blob/master/.config/starship.toml][Starship Prompt Configuration File]]
-https://github.com/mistersaturn/dotfiles/tree/master/.config/MX-Linux
