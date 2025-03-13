@@ -8,6 +8,9 @@ This repository contains various configuration files for Linux based systems.
 ** Window Manager
 [[https://github.com/mistersaturn/dotfiles/tree/master/.config/awesome][AwesomeWM Configuration / Default Themes]]
 
+** OS Specific
+[[https://github.com/mistersaturn/dotfiles/tree/master/.config/MX-Linux][MX Linux 23.5 (Libretto) Configuration Files]]
+
 ** Emacs
 [[https://github.com/mistersaturn/dotfiles/tree/master/.config/doom][Doom Emacs Configuration / Package / Init Files]]
 
@@ -17,3 +20,4 @@ This repository contains various configuration files for Linux based systems.
 ** Terminal / Shell
 [[https://github.com/mistersaturn/dotfiles/blob/master/.bashrc][Bash Configuration File]]
 [[https://github.com/mistersaturn/dotfiles/blob/master/.config/starship.toml][Starship Prompt Configuration File]]
+https://github.com/mistersaturn/dotfiles/tree/master/.config/MX-Linux
