@@ -1,0 +1,41 @@
+#+TITLE: NETTUI nmcli Interface
+#+DESCRIPTION: Provides a tidy interface between the terminal and nmcli
+#+AUTHOR: Dean Smith
+#+DATE: Thu Mar 13 2025
+
+* Case Use
+** Yo DAWG, I heard you like interfaces for your interfaces?!
+This script provides a neater, more consolidated interface between the terminal emulator and the tool nmcli (Network Manager CLI).
+It is useful for those who use window managers that don't have a taskbar or systray present by default.
+
+* Dependencies
+This script utilizes[[https://github.com/charmbracelet/gum][ Charmbracelet Gum]]. If you already have Gum installed, it should work out of the box!
+This script also interacts directly with [[https://networkmanager.dev/docs/api/latest/nmcli.html][nmcli]].
+
+* Usage
+** NOTE: modify the script to handle your network by changing the name of the device in the line:
+
+#+BEGIN_EXAMPLE
+nmcli dev up <name of device>
+#+END_EXAMPLE
+
+** Then, chmod the script to make it executable:
+
+#+BEGIN_EXAMPLE
+chmod +x nettui.sh
+#+END_EXAMPLE
+
+** If you want to use the script as a command anywhere in terminal, move it to the '/usr/bin/' directory.
+*** Rename it first:
+
+#+BEGIN_EXAMPLE
+mv nettui.sh nettui
+#+END_EXAMPLE
+
+*** Now, relocate it to your '/usr/bin' directory:
+
+#+BEGIN_EXAMPLE
+mv nettui /usr/bin/
+#+END_EXAMPLE
+
+Now you have a tidy interface that allows you to connect, disconnect, and see the current status of the networks!
