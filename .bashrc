@@ -33,9 +33,16 @@ if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
 fi
 
-# some more ls aliases
+# ls aliases
 alias ls='lsd'
-alias lsa='lsd -a'
+alias lsa='lsd -a' # all
+alias lsaa='lsd -A' # almost all
+alias lsr='lsd -R' # recursive
+alias lsm='lsd -t' # sort by time modified
+
+# fzf aliases
+alias ffx='fzf -x' # extended search
+alias ffe='fzf -e' # exact search
 
 # cd aliases
 alias ..="cd .."
@@ -44,15 +51,15 @@ alias .3="cd ../../.."
 alias .4="cd ../../../.."
 alias .5="cd ../../../../.."
 
-# various aliases
+# Miscellaneous aliases
 alias grep="grep --color=auto"
 alias emacs="emacsclient -c -a 'emacs'"
-alias netup="nmcli device up wlan0"
-alias netdwn="nmcli device down wlan0"
-alias netcon="nmcli connection show"
 
-# config (git)
+# Config (git)
 alias config='/usr/bin/git --git-dir=$HOME/dotfiles --work-tree=$HOME'
+
+# Scripts (git)
+alias scripts='/usr/bin/git --git-dir=$HOME/scripts --work-tree=$HOME/Documents/scripts'
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
