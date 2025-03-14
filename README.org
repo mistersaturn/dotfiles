@@ -18,5 +18,4 @@ This repository contains various configuration files and shell scripts for Linux
 | [[https://github.com/mistersaturn/dotfiles/blob/master/.config/compton.conf][Compton Compositor Configuration File]] |
 
 ** Terminal / Shell
-| [[https://github.com/mistersaturn/dotfiles/blob/master/.bashrc][Bash Configuration File]] |
-| [[https://github.com/mistersaturn/dotfiles/blob/master/.config/starship.toml][Starship Prompt Configuration File]] |
+| [[https://github.com/mistersaturn/dotfiles/blob/master/.bashrc][Bash Configuration File]] | [[https://github.com/mistersaturn/dotfiles/blob/master/.config/starship.toml][Starship Prompt Configuration File]] |
