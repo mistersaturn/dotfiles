@@ -6,14 +6,12 @@
 selTasks=$(gum choose "network connect" "network disconnect" "network status")
     if [ "$selTasks" == "network connect" ]; then
     gum confirm 'Are you sure you want to connect?' &&
-        sleep 5
-        nmcli dev up wlan0
+        nmcli -p -w 5 dev up wlan0
     fi
     if [ "$selTasks" == "network disconnect" ]; then
     gum confirm 'Are you sure you want to disconnect?' &&
-        sleep 5
-        nmcli dev down wlan0
+        nmcli -p -w 5 dev down wlan0
     fi
     if [ "$selTasks" == "network status" ]; then
-        nmcli dev status
+        nmcli -p dev status
     fi
