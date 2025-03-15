@@ -1,3 +1,5 @@
+(beacon-mode 1)
+
 (setq org-directory "~/org/")
 
 (evil-define-key 'normal dired-mode-map
@@ -34,9 +36,31 @@
                               ("mkv" . "vlc")
                               ("mp4" . "vlc")))
 
+(evil-define-key 'normal peep-dired-mode-map
+  (kbd "j") 'peep-dired-next-file
+  (kbd "k") 'peep-dired-prev-file)
+(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+
 (setq delete-by-moving-to-trash t
       trash-directory "~/.local/share/Trash/files/")
 
+(use-package emojify
+  :hook (after-init . global-emojify-mode))
+
 (setq display-line-numbers-type t)
+
+(set-face-attribute 'mode-line nil :font "EnvyCodeR Nerd Font 13")
+(setq doom-modeline-height 30     ;; sets modeline height
+      doom-modeline-bar-width 5   ;; sets right bar width
+      doom-modeline-persp-name t  ;; adds perspective name to modeline
+      doom-modeline-persp-icon t) ;; adds folder icon next to persp name
+
+(map! :leader
+      :desc "Switch to perspective NAME"       "DEL" #'persp-switch
+      :desc "Switch to buffer in perspective"  "," #'persp-switch-to-buffer
+      :desc "Switch to next perspective"       "]" #'persp-next
+      :desc "Switch to previous perspective"   "[" #'persp-prev
+      :desc "Add a buffer current perspective" "+" #'persp-add-buffer
+      :desc "Remove perspective by name"       "-" #'persp-remove-by-name)
 
 (setq doom-theme 'doom-tomorrow-night)
