@@ -1,0 +1,74 @@
+#+TITLE: Doom Emacs Configuration File
+#+DESCRIPTION: Doom Emacs Configuration
+#+AUTHOR: Dean Smith
+#+DATE: Sat Mar 15 2025
+#+PROPERTY: header-args :tangle config.el
+
+** Directories
+
+#+BEGIN_SRC emacs-lisp
+(setq org-directory "~/org/")
+#+END_SRC
+
+** Dired Configuration
+
+*** Keybindings
+
+#+BEGIN_SRC emacs-lisp
+(evil-define-key 'normal dired-mode-map
+  (kbd "M-RET") 'dired-display-file
+  (kbd "h") 'dired-up-directory
+  (kbd "l") 'dired-open-file ; use dired-find-file instead of dired-open.
+  (kbd "m") 'dired-mark
+  (kbd "t") 'dired-toggle-marks
+  (kbd "u") 'dired-unmark
+  (kbd "C") 'dired-do-copy
+  (kbd "D") 'dired-do-delete
+  (kbd "J") 'dired-goto-file
+  (kbd "M") 'dired-do-chmod
+  (kbd "O") 'dired-do-chown
+  (kbd "P") 'dired-do-print
+  (kbd "R") 'dired-do-rename
+  (kbd "T") 'dired-do-touch
+  (kbd "Y") 'dired-copy-filenamecopy-filename-as-kill ; copies filename to kill ring.
+  (kbd "Z") 'dired-do-compress
+  (kbd "+") 'dired-create-directory
+  (kbd "-") 'dired-do-kill-lines
+  (kbd "% l") 'dired-downcase
+  (kbd "% m") 'dired-mark-files-regexp
+  (kbd "% u") 'dired-upcase
+  (kbd "* %") 'dired-mark-files-regexp
+  (kbd "* .") 'dired-mark-extension
+  (kbd "* /") 'dired-mark-directories
+  (kbd "; d") 'epa-dired-do-decrypt
+  (kbd "; e") 'epa-dired-do-encrypt)
+#+END_SRC
+
+*** Dired Extensions Handling
+
+#+BEGIN_SRC  emacs-lisp
+(setq dired-open-extensions '(("gif" . "gimp")
+                              ("jpg" . "gimp")
+                              ("png" . "gimp")
+                              ("mkv" . "vlc")
+                              ("mp4" . "vlc")))
+#+END_SRC
+
+*** Dired Move Deleted Files To Trash
+
+#+BEGIN_SRC emacs-lisp
+(setq delete-by-moving-to-trash t
+      trash-directory "~/.local/share/Trash/files/")
+#+END_SRC
+
+** Line Numbers
+
+#+BEGIN_SRC emacs-lisp
+(setq display-line-numbers-type t)
+#+END_SRC
+
+** Theme
+
+#+BEGIN_SRC emacs-lisp
+(setq doom-theme 'doom-tomorrow-night)
+#+END_SRC
