@@ -4,6 +4,12 @@
 #+DATE: Sat Mar 15 2025
 #+PROPERTY: header-args :tangle config.el
 
+** Beacon
+
+#+BEGIN_SRC emacs-lisp
+(beacon-mode 1)
+#+END_SRC
+
 ** Directories
 
 #+BEGIN_SRC emacs-lisp
@@ -54,6 +60,15 @@
                               ("mp4" . "vlc")))
 #+END_SRC
 
+*** Dired Peep Mode Keybindings
+
+#+BEGIN_SRC emacs-lisp
+(evil-define-key 'normal peep-dired-mode-map
+  (kbd "j") 'peep-dired-next-file
+  (kbd "k") 'peep-dired-prev-file)
+(add-hook 'peep-dired-hook 'evil-normalize-keymaps)
+#+END_SRC
+
 *** Dired Move Deleted Files To Trash
 
 #+BEGIN_SRC emacs-lisp
@@ -61,10 +76,39 @@
       trash-directory "~/.local/share/Trash/files/")
 #+END_SRC
 
+** Emojis
+
+#+BEGIN_SRC emacs-lisp
+(use-package emojify
+  :hook (after-init . global-emojify-mode))
+#+END_SRC
+
 ** Line Numbers
 
 #+BEGIN_SRC emacs-lisp
 (setq display-line-numbers-type t)
+#+END_SRC
+
+** Modeline
+
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'mode-line nil :font "EnvyCodeR Nerd Font 13")
+(setq doom-modeline-height 30     ;; sets modeline height
+      doom-modeline-bar-width 5   ;; sets right bar width
+      doom-modeline-persp-name t  ;; adds perspective name to modeline
+      doom-modeline-persp-icon t) ;; adds folder icon next to persp name
+#+END_SRC
+
+** Perspective
+
+#+BEGIN_SRC emacs-lisp
+(map! :leader
+      :desc "Switch to perspective NAME"       "DEL" #'persp-switch
+      :desc "Switch to buffer in perspective"  "," #'persp-switch-to-buffer
+      :desc "Switch to next perspective"       "]" #'persp-next
+      :desc "Switch to previous perspective"   "[" #'persp-prev
+      :desc "Add a buffer current perspective" "+" #'persp-add-buffer
+      :desc "Remove perspective by name"       "-" #'persp-remove-by-name)
 #+END_SRC
 
 ** Theme
