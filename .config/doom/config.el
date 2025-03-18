@@ -1,3 +1,5 @@
+;;; $DOOMDIR/config.el -*- lexical-binding: t; no-byte-compile: t; coding: utf-8-unix; -*-
+
 (beacon-mode 1)
 
 (setq org-directory "~/org/")

@@ -4,6 +4,10 @@
 #+DATE: Sat Mar 15 2025
 #+PROPERTY: header-args :tangle config.el
 
+#+BEGIN_SRC emacs-lisp
+;;; $DOOMDIR/config.el -*- lexical-binding: t; no-byte-compile: t; coding: utf-8-unix; -*-
+#+END_SRC
+
 ** Beacon
 
 #+BEGIN_SRC emacs-lisp
