@@ -40,7 +40,7 @@ beautiful.init(gears.filesystem.get_themes_dir() .. "xresources/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "xfce4-terminal"
-editor = os.getenv("EDITOR") or "emacs"
+editor = os.getenv("EDITOR") or "geany"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
