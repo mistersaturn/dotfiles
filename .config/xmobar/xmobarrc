@@ -1,0 +1,27 @@
+Config { font = "EnvyCodeR Nerd Font Mono 11"
+       , additionalFonts = ["Symbols Nerd Font Regular 11"]
+       , borderColor = "black"
+       , border = TopB
+       , bgColor = "#1d1f21"
+       , fgColor = "#eaeaea"
+       , alpha = 222
+       , position = Top
+       , textOffset = -1
+       , iconOffset = -1
+       , lowerOnStart = True
+       , pickBroadest = False
+       , persistent = True
+       , hideOnStart = False
+       , iconRoot = "."
+       , allDesktops = True
+       , overrideRedirect = True
+       , commands = [ Run Weather "KUZA" ["-t","<fn=1>\xe0ba</fn><fn=1>\xe0bc</fn> <tempF>°F"] 36000
+                    , Run Cpu ["-t","<fn=1>\xe0ba</fn><fn=1>\xe0bc</fn>  <fn=1>\xf4bc</fn> cpu: <total>%","-H","50","--high","#d54e53"] 10
+                    , Run Memory ["-t","<fn=1>\xe0ba</fn><fn=1>\xe0bc</fn>  <fn=1>\xefc5</fn> mem: <usedratio>%"] 10
+                    , Run Date "<fn=1>\xe0ba</fn><fn=1>\xe0bc</fn>  <fn=1>\xf252</fn> %b %_d %-l:%M %p" "date" 50
+                    , Run Network "wlan0" ["-t","<fn=1>\xe0ba</fn><fn=1>\xe0bc</fn>  <fn=1>\xf0815</fn> wlan0:  <rx>kb / <tx>kb"] 20
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = " }{ %wlan0%  <fc=#7aa6da>%cpu%</fc> <fc=#c397d8>%memory%</fc> <fc=#e78c45>%KUZA%</fc> <fc=#e7c547>%date%</fc> "
+       }
