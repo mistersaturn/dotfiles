@@ -6,7 +6,7 @@
 This repository contains various configuration files and shell scripts for Linux based systems.
 
 ** Window Manager
-| [[https://github.com/mistersaturn/dotfiles/tree/master/.config/awesome][AwesomeWM Configuration / Default Themes]] |
+| [[https://github.com/mistersaturn/dotfiles/tree/master/.config/awesome][AwesomeWM Configuration / Default Themes]] | [[https://github.com/mistersaturn/dotfiles/tree/master/.xmonad][XMonad Configuration]]
 
 ** OS Specific
 | [[https://github.com/mistersaturn/dotfiles/tree/master/.config/MX-Linux][MX Linux 23.5 (Libretto) Configuration Files]] |
