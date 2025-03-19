@@ -54,6 +54,7 @@ alias .5="cd ../../../../.."
 # Miscellaneous aliases
 alias grep="grep --color=auto"
 alias emacs="emacsclient -c -a 'emacs'"
+alias cmus=" -T cmus & 'cmus'"
 
 # Config (git)
 alias config='/usr/bin/git --git-dir=$HOME/dotfiles --work-tree=$HOME'
