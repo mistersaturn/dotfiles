@@ -8,7 +8,7 @@ import XMonad.Prompt.OrgMode (orgPrompt)
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
-myTerminal = "xfce4-terminal"
+myTerminal = "rxvt-unicode"
 
 myFocusFollowsMouse :: Bool
 myFocusFollowsMouse = True
@@ -32,7 +32,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. controlMask, xK_m   ), namedScratchpadAction myScratchPads "cmus")
     , ((modm .|. controlMask, xK_Return), namedScratchpadAction myScratchPads "terminal")
     , ((modm,               xK_b     ), spawn "librewolf")
-    , ((modm .|. shiftMask, xK_b     ), spawn "xfce4-terminal -e links")
+    , ((modm .|. shiftMask, xK_b     ), spawn "rxvt-unicode -e links")
     , ((modm .|. shiftMask, xK_c     ), kill)
     , ((modm,               xK_space ), sendMessage NextLayout)
     , ((modm .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
