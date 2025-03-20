@@ -15,6 +15,7 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Util.SpawnOnce
 import XMonad.Util.NamedScratchpad
 import XMonad.Prompt.OrgMode (orgPrompt)
+import XMonad.Hooks.DynamicLog
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 #+END_SRC
@@ -184,6 +185,7 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
 ** Main
 
 #+BEGIN_SRC haskell
+main :: IO()
 main = do
   xmproc <- spawnPipe "xmobar"
   xmonad $ docks defaults
