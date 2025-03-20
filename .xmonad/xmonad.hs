@@ -8,7 +8,7 @@ import XMonad.Prompt.OrgMode (orgPrompt)
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
-myTerminal = "rxvt-unicode"
+myTerminal = "xfce4-terminal"
 
 myFocusFollowsMouse :: Bool
 myFocusFollowsMouse = True
@@ -32,7 +32,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. controlMask, xK_m   ), namedScratchpadAction myScratchPads "cmus")
     , ((modm .|. controlMask, xK_Return), namedScratchpadAction myScratchPads "terminal")
     , ((modm,               xK_b     ), spawn "librewolf")
-    , ((modm .|. shiftMask, xK_b     ), spawn "rxvt-unicode -e links")
+    , ((modm .|. shiftMask, xK_b     ), spawn "xfce4-terminal -e links")
     , ((modm .|. shiftMask, xK_c     ), kill)
     , ((modm,               xK_space ), sendMessage NextLayout)
     , ((modm .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
@@ -55,7 +55,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     ]
     ++
     [((m .|. modm, k), windows $ f i)
-        | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_6]
+        | (i, k) <- zip (XMonad.workspaces conf) [xK_1..xK_6]
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
     ++
     [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
