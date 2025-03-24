@@ -91,3 +91,5 @@ echo $PATH | grep -Eq "(^|:)/usr/sbin(:|)" || PATH=$PATH:/usr/sbin
 
 # Starship Prompt
 eval "$(starship init bash)"
+
+[ -f "/home/dean/.ghcup/env" ] && . "/home/dean/.ghcup/env" # ghcup-env

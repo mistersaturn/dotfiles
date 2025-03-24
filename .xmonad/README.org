@@ -1,162 +1,127 @@
 #+TITLE: XMonad Window Manager Configuration
 #+DESCRIPTION: Configuration for XMonad Window Manager written in Haskell
 #+AUTHOR: Dean Smith
-#+DATE: Wed Mar 19 2025
+#+DATE: Wed Mar 21 2025
 #+PROPERTY: header-args :tangle xmonad.hs
 
-** Imports
-This section is for handling imported libraries.
+* Imports
+Import libraries here:
+
+** Hooks
 
 #+BEGIN_SRC haskell
 import XMonad
-import System.Exit
-import XMonad.Util.Run
 import XMonad.Hooks.ManageDocks
-import XMonad.Util.SpawnOnce
+import XMonad.Hooks.ManageHelpers ()
+import XMonad.Hooks.EwmhDesktops
+#+END_SRC
+
+** Layout / Prompt
+
+#+BEGIN_SRC haskell
+import XMonad.Layout.Spacing
+import XMonad.Layout.ThreeColumns
+import XMonad.Prompt.OrgMode
+#+END_SRC
+
+** Utilities
+
+#+BEGIN_SRC haskell
+import XMonad.Util.Run
+import XMonad.Util.EZConfig
 import XMonad.Util.NamedScratchpad
-import XMonad.Prompt.OrgMode (orgPrompt)
-import XMonad.Hooks.DynamicLog
+import XMonad.Util.SpawnOnce
+#+END_SRC
+
+** Stack Set
+
+#+BEGIN_SRC haskell
 import qualified XMonad.StackSet as W
-import qualified Data.Map        as M
 #+END_SRC
 
-** Top Level Values
-This section is for handling top level values.
-
-*** Default Terminal
+* Defaults
+Handle default values here to be used in code later:
 
 #+BEGIN_SRC haskell
+myTerminal :: String
 myTerminal = "xfce4-terminal"
-#+END_SRC
-
-*** Focus
-This section is for handling mouse focus and click passing.
-
-#+BEGIN_SRC haskell
-myFocusFollowsMouse :: Bool
-myFocusFollowsMouse = True
-myClickJustFocuses :: Bool
-myClickJustFocuses = False
-#+END_SRC
-
-*** Window Border Values
-
-#+BEGIN_SRC haskell
+myBorderWidth :: Dimension
 myBorderWidth = 2
+myNormalBorderColor :: String
 myNormalBorderColor = "#282A36"
+myFocusedBorderColor :: String
 myFocusedBorderColor = "#44475A"
 #+END_SRC
 
-** Default Modkey
-Sets the default modkey value.
+* Main
+
+** Initial
+Main function that spawns Xmobar, etcetera.
 
 #+BEGIN_SRC haskell
-myModMask = mod4Mask
+main :: IO ()
+main = do   xmproc <- spawnPipe "xmobar"
+            xmonad $ ewmh $ docks myConfig
 #+END_SRC
 
-** Taglist Names
-Sets the names of the taglist (workspaces)
+** Config
+Handle global configuration values here:
 
 #+BEGIN_SRC haskell
-myWorkspaces = ["1","2","3","4","5","6"]
+myConfig = def
+    { modMask     = mod4Mask
+    , terminal    = myTerminal
+    , layoutHook  = myLayout
+    , manageHook  = myManageHook
+    , startupHook = myStartupHook
+    , borderWidth = myBorderWidth
+    , normalBorderColor = myNormalBorderColor
+    , focusedBorderColor = myFocusedBorderColor
+    }
+    `additionalKeysP` myKeys
 #+END_SRC
 
 ** Keybindings (Global)
-This section is for configuring global keybindings.
 
 #+BEGIN_SRC haskell
-myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
-
-    [ ((modm, xK_Return), spawn $ XMonad.terminal conf)
-    , ((modm,               xK_d     ), spawn "rofi -show drun")
-    , ((modm .|. shiftMask, xK_d     ), spawn "dmenu_run")
-    , ((modm .|. shiftMask, xK_o     ), orgPrompt def "TODO" "~/org/todos.org")
-    , ((modm .|. controlMask, xK_m   ), namedScratchpadAction myScratchPads "cmus")
-    , ((modm .|. controlMask, xK_Return), namedScratchpadAction myScratchPads "terminal")
-    , ((modm,               xK_b     ), spawn "librewolf")
-    , ((modm .|. shiftMask, xK_b     ), spawn "xfce4-terminal -e links")
-    , ((modm .|. shiftMask, xK_c     ), kill)
-    , ((modm,               xK_space ), sendMessage NextLayout)
-    , ((modm .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
-    , ((modm,               xK_n     ), refresh)
-    , ((modm,               xK_Tab   ), windows W.focusDown)
-    , ((modm,               xK_j     ), windows W.focusDown)
-    , ((modm,               xK_k     ), windows W.focusUp  )
-    , ((modm,               xK_m     ), windows W.focusMaster  )
-    , ((modm,               xK_p), windows W.swapMaster)
-    , ((modm .|. shiftMask, xK_j     ), windows W.swapDown  )
-    , ((modm .|. shiftMask, xK_k     ), windows W.swapUp    )
-    , ((modm,               xK_h     ), sendMessage Shrink)
-    , ((modm,               xK_l     ), sendMessage Expand)
-    , ((modm,               xK_t     ), withFocused $ windows . W.sink)
-    , ((modm              , xK_comma ), sendMessage (IncMasterN 1))
-    , ((modm              , xK_period), sendMessage (IncMasterN (-1)))
-    , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
-    , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
-
-    ]
-    ++
-    [((m .|. modm, k), windows $ f i)
-        | (i, k) <- zip (XMonad.workspaces conf) [xK_1..xK_6]
-        , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
-    ++
-    [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
-        | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
-        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
-#+END_SRC
-
-** Mouse Bindings (Global)
-This section is for configuring global mouse bindings.
-
-#+BEGIN_SRC haskell
-myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
-
-    [ ((modm, button1), (\w -> focus w >> mouseMoveWindow w
-                                       >> windows W.shiftMaster))
-    , ((modm, button2), (\w -> focus w >> windows W.shiftMaster))
-    , ((modm, button3), (\w -> focus w >> mouseResizeWindow w
-                                       >> windows W.shiftMaster))
+myKeys :: [(String, X ())]
+myKeys =
+    [("M-<Return>", spawn "xfce4-terminal")
+    ,("M-C-r", spawn "xmonad --recompile; xmonad --restart")
+    ,("M-b", spawn "librewolf")
+    ,("M-S-b", spawn "xfce4-terminal -e links")
+    ,("M-d", spawn "rofi -show drun")
+    ,("M-S-o", orgPrompt def "TODO" "~/org/todos.org")
+    ,("M-S-c", kill)
+    ,("M-C-m", namedScratchpadAction myScratchPads "cmus")
+    ,("M-C-<Return>", namedScratchpadAction myScratchPads "terminal")
     ]
 #+END_SRC
 
 ** Layouts
-This section is for configuring layout styles. Default = "Tall tiled"
 
 #+BEGIN_SRC haskell
-myLayout = avoidStruts tiled ||| Mirror tiled ||| Full
-  where
-     tiled = Tall nmaster delta ratio
-     nmaster = 1
-     ratio = 1/2
-     delta = 3/100
+myLayout = spacing 2 $ avoidStruts tiled ||| Mirror tiled ||| threeCol
+    where
+      tiled = Tall 1 (3/100) (1/2)
+      threeCol = ThreeColMid 1 (3/100) (1/2)
 #+END_SRC
 
 ** Manage Hook
-This section is for configuring the Manage Hook, which manages window clients.
 
 #+BEGIN_SRC haskell
+myManageHook :: ManageHook
 myManageHook = composeAll
-    [ className =? "MPlayer"        --> doFloat
-    , className =? "GIMP"           --> doFloat
+    [ className =? "MPlayer" --> doFloat
+    , className =? "GIMP" --> doFloat
     , resource  =? "desktop_window" --> doIgnore
-    , resource  =? "kdesktop"       --> doIgnore
+    , resource  =? "kdesktop" --> doIgnore
     ] <+> namedScratchpadManageHook myScratchPads
 #+END_SRC
 
-** Event, Logging and Startup Hooks
-This section is for handling events, logging and autostarting processes.
-
-#+BEGIN_SRC haskell
-myEventHook = mempty
-myLogHook = return ()
-myStartupHook = do
-              spawnOnce "xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal &"
-              spawnOnce "compton &"
-              spawnOnce "nitrogen --restore &"
-#+END_SRC
-
-** Scratch Pads
-This section is for handling scratchpad window clients. Scratchpads spawn/toggle with a keybinding.
+** Scratchpads
+Create scratchpad windows that you can view/hide with toggle here:
+(Set keybindings in Keybinding (Global) code block)
 
 #+BEGIN_SRC haskell
 myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
@@ -180,39 +145,9 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                  w = 0.9
                  t = 0.95 -h
                  l = 0.95 -w
-#+END_SRC
 
-** Main
-
-#+BEGIN_SRC haskell
-main :: IO()
-main = do
-  xmproc <- spawnPipe "xmobar"
-  xmonad $ docks defaults
-#+END_SRC
-
-** Default Values
-This section is for handling default values.
-
-#+BEGIN_SRC haskell
-defaults = def {
-      -- simple stuff
-        terminal           = myTerminal,
-        focusFollowsMouse  = myFocusFollowsMouse,
-        clickJustFocuses   = myClickJustFocuses,
-        borderWidth        = myBorderWidth,
-        modMask            = myModMask,
-        workspaces         = myWorkspaces,
-        normalBorderColor  = myNormalBorderColor,
-        focusedBorderColor = myFocusedBorderColor,
-      -- key bindings
-        keys               = myKeys,
-        mouseBindings      = myMouseBindings,
-      -- hooks, layouts
-        layoutHook         = myLayout,
-        manageHook         = myManageHook,
-        handleEventHook    = myEventHook,
-        logHook            = myLogHook,
-        startupHook        = myStartupHook
-    }
-#+END_SRC
+myStartupHook = do
+    spawnOnce "xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal &"
+    spawnOnce "compton &"
+    spawnOnce "nitrogen --restore &"
+    #+END_SRC
