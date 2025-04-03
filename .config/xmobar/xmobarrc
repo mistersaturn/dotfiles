@@ -15,12 +15,13 @@ Config { font = "EnvyCodeR Nerd Font Mono 11"
        , iconRoot = "."
        , allDesktops = True
        , overrideRedirect = True
-       , commands = [ Run Cpu ["-t","<fn=1>\xe0ba</fn><fn=1>\xe0bc</fn>  <fn=1>\xf4bc</fn> cpu: <total>%","-H","50","--high","#d54e53"] 10
+       , commands = [ Run Com "bash" ["-c", "/home/dean/.config/xmobar/cmus-xmobar.sh"] "cmus" 10
+                    , Run Cpu ["-t","<fn=1>\xe0ba</fn><fn=1>\xe0bc</fn>  <fn=1>\xf4bc</fn> cpu: <total>%","-H","50","--high","#d54e53"] 10
                     , Run Memory ["-t","<fn=1>\xe0ba</fn><fn=1>\xe0bc</fn>  <fn=1>\xefc5</fn> mem: <usedratio>%"] 10
                     , Run Date "<fn=1>\xe0ba</fn><fn=1>\xe0bc</fn>  <fn=1>\xf252</fn> %b %_d %-l:%M %p" "date" 50
                     , Run Network "wlan0" ["-t","<fn=1>\xe0ba</fn><fn=1>\xe0bc</fn>  <fn=1>\xf0815</fn> wlan0:  <rx>kb / <tx>kb"] 20
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = " <fc=#70c0b1>%wlan0%</fc>}{ <fc=#7aa6da>%cpu%</fc> <fc=#c397d8>%memory%</fc> <fc=#e7c547>%date%</fc> "
+       , template = " <fc=#EC93D3>%cmus%</fc> <fc=#70c0b1>%wlan0%</fc>}{ <fc=#7aa6da>%cpu%</fc> <fc=#c397d8>%memory%</fc> <fc=#e7c547>%date%</fc> "
        }
