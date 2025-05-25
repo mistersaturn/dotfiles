@@ -93,3 +93,5 @@ echo $PATH | grep -Eq "(^|:)/usr/sbin(:|)" || PATH=$PATH:/usr/sbin
 eval "$(starship init bash)"
 
 [ -f "/home/dean/.ghcup/env" ] && . "/home/dean/.ghcup/env" # ghcup-env
+export _JAVA_AWT_WM_NONREPARENTING=1
+. "$HOME/.cargo/env"
