@@ -1,7 +1,9 @@
 import XMonad
+import XMonad.Actions.Submap
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers ()
 import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.SetWMName
 
 import XMonad.Layout.Spacing
 import XMonad.Layout.ThreeColumns
@@ -46,13 +48,13 @@ myKeys =
     ,("M-b", spawn "librewolf")
     ,("M-S-b", spawn "xfce4-terminal -e links")
     ,("M-d", spawn "rofi -show drun")
-    ,("M-S-o", orgPrompt def "TODO" "~/org/todos.org")
+    ,("M-S-t", orgPrompt def "TODO" "~/org/todos.org")
     ,("M-S-c", kill)
     ,("M-C-m", namedScratchpadAction myScratchPads "cmus")
     ,("M-C-<Return>", namedScratchpadAction myScratchPads "terminal")
-    ]
+     ]
 
-myLayout = spacing 2 $ avoidStruts tiled ||| Mirror tiled ||| threeCol
+myLayout = spacing 0 $ avoidStruts tiled ||| Mirror tiled ||| threeCol
     where
       tiled = Tall 1 (3/100) (1/2)
       threeCol = ThreeColMid 1 (3/100) (1/2)
@@ -61,6 +63,7 @@ myManageHook :: ManageHook
 myManageHook = composeAll
     [ className =? "MPlayer" --> doFloat
     , className =? "GIMP" --> doFloat
+    , className =? "Conky" --> doIgnore
     , resource  =? "desktop_window" --> doIgnore
     , resource  =? "kdesktop" --> doIgnore
     ] <+> namedScratchpadManageHook myScratchPads
@@ -88,6 +91,10 @@ myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
                  l = 0.95 -w
 
 myStartupHook = do
+    setWMName "LG3D"
     spawnOnce "xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal &"
+    spawnOnce "nm-applet &"
     spawnOnce "compton &"
     spawnOnce "nitrogen --restore &"
+    spawnOnce "stalonetray &"
+    spawnOnce "caffeine-indicator &"
