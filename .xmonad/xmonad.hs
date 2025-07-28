@@ -1,12 +1,15 @@
 import XMonad
 import XMonad.Actions.Submap
 import XMonad.Hooks.ManageDocks
-import XMonad.Hooks.ManageHelpers ()
+import XMonad.Hooks.ManageHelpers
 import XMonad.Hooks.EwmhDesktops
 import XMonad.Hooks.SetWMName
+import XMonad.Hooks.DynamicLog
 
 import XMonad.Layout.Spacing
 import XMonad.Layout.ThreeColumns
+import XMonad.Layout.NoBorders
+import XMonad.Layout.Renamed
 import XMonad.Prompt.OrgMode
 
 import XMonad.Util.Run
@@ -14,87 +17,212 @@ import XMonad.Util.EZConfig
 import XMonad.Util.NamedScratchpad
 import XMonad.Util.SpawnOnce
 
+import System.IO (Handle, hPutStrLn)
+import System.Exit (exitSuccess)
+
 import qualified XMonad.StackSet as W
 
+-- Terminal and appearance settings
 myTerminal :: String
 myTerminal = "xfce4-terminal"
+
 myBorderWidth :: Dimension
 myBorderWidth = 2
-myNormalBorderColor :: String
-myNormalBorderColor = "#282A36"
-myFocusedBorderColor :: String
-myFocusedBorderColor = "#44475A"
 
+
+myNormalBorderColor :: String
+myNormalBorderColor = "#1d1f21"
+
+myFocusedBorderColor :: String
+myFocusedBorderColor = "#EC93D3"
+
+-- Color definitions
+background, currentLine, selection, foreground :: String
+comment, red, orange, yellow, green, aqua, blue, purple :: String
+background  = "#1d1f21"
+currentLine = "#393939"
+selection   = "#515151"
+foreground  = "#eaeaea"
+comment     = "#999999"
+red         = "#d54e53"
+orange      = "#e78c45"
+yellow      = "#e7c547"
+green       = "#b9ca4a"
+aqua        = "#70c0b1"
+blue        = "#7aa6da"
+purple      = "#c397d8"
+pink        = "#EC93D3"
+
+-- Main configuration
 main :: IO ()
-main = do   xmproc <- spawnPipe "xmobar"
-            xmonad $ ewmh $ docks myConfig
+main = do
+    xmproc <- spawnPipe "xmobar ~/.config/xmobar/xmobarrc"
+    xmonad $ ewmhFullscreen $ ewmh $ docks myConfig { logHook = dynamicLogWithPP $ myXmobarPP xmproc }
 
 myConfig = def
-    { modMask     = mod4Mask
-    , terminal    = myTerminal
-    , layoutHook  = myLayout
-    , manageHook  = myManageHook
-    , startupHook = myStartupHook
-    , borderWidth = myBorderWidth
-    , normalBorderColor = myNormalBorderColor
+    { modMask            = mod4Mask
+    , terminal           = myTerminal
+    , layoutHook         = myLayout
+    , manageHook         = myManageHook
+    , startupHook        = myStartupHook
+    , borderWidth        = myBorderWidth
+    , normalBorderColor  = myNormalBorderColor
     , focusedBorderColor = myFocusedBorderColor
+    , workspaces         = myWorkspaces
     }
     `additionalKeysP` myKeys
 
+-- Workspace names
+myWorkspaces :: [String]
+myWorkspaces = ["idle", "www", "dev", "media", "art"]
+
+-- Key bindings
 myKeys :: [(String, X ())]
 myKeys =
-    [("M-<Return>", spawn "xfce4-terminal")
-    ,("M-C-r", spawn "xmonad --recompile; xmonad --restart")
-    ,("M-b", spawn "librewolf")
-    ,("M-S-b", spawn "xfce4-terminal -e links")
-    ,("M-d", spawn "rofi -show drun")
-    ,("M-S-t", orgPrompt def "TODO" "~/org/todos.org")
-    ,("M-S-c", kill)
-    ,("M-C-m", namedScratchpadAction myScratchPads "cmus")
-    ,("M-C-<Return>", namedScratchpadAction myScratchPads "terminal")
-     ]
+    -- Launch applications
+    [ ("M-<Return>", spawn myTerminal)
+    , ("M-S-<Return>", windows W.swapMaster)
+    , ("M-d", spawn "rofi -show drun")
+    , ("M-S-d", spawn "rofi -show run")
+    , ("M-b", spawn "librewolf")
+    , ("M-S-b", spawn (myTerminal ++ " -e links"))
 
-myLayout = spacing 0 $ avoidStruts tiled ||| Mirror tiled ||| threeCol
-    where
-      tiled = Tall 1 (3/100) (1/2)
-      threeCol = ThreeColMid 1 (3/100) (1/2)
+    -- System controls
+    , ("M-C-r", spawn "xmonad --recompile; xmonad --restart")
+    , ("M-S-q", io exitSuccess)
+    , ("M-S-c", kill)
 
+    -- Volume controls
+    , ("<XF86AudioRaiseVolume>", spawn "pactl set-sink-volume @DEFAULT_SINK@ +5%")
+    , ("<XF86AudioLowerVolume>", spawn "pactl set-sink-volume @DEFAULT_SINK@ -5%")
+    , ("<XF86AudioMute>", spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle")
+
+    -- Brightness controls
+    , ("<XF86MonBrightnessUp>", spawn "xbacklight -inc 10")
+    , ("<XF86MonBrightnessDown>", spawn "xbacklight -dec 10")
+
+    -- Screenshots
+    , ("M-<Print>", spawn "scrot -s ~/Pictures/screenshot_%Y-%m-%d_%H-%M-%S.png")
+    , ("<Print>", spawn "scrot ~/Pictures/screenshot_%Y-%m-%d_%H-%M-%S.png")
+
+    -- Org-mode integration
+    , ("M-S-t", orgPrompt def "TODO" "~/org/todos.org")
+    , ("M-S-n", orgPrompt def "NOTE" "~/org/notes.org")
+
+    -- Scratchpads
+    , ("M-C-m", namedScratchpadAction myScratchPads "cmus")
+    , ("M-C-<Return>", namedScratchpadAction myScratchPads "terminal")
+    , ("M-C-h", namedScratchpadAction myScratchPads "htop")
+
+    -- Layout controls
+    , ("M-<Space>", sendMessage NextLayout)
+    , ("M-S-<Space>", asks config >>= setLayout . layoutHook)
+    , ("M-f", withFocused $ windows . W.sink) -- Un-float focused window
+
+    -- Window navigation
+    , ("M-j", windows W.focusDown)
+    , ("M-k", windows W.focusUp)
+    , ("M-S-j", windows W.swapDown)
+    , ("M-S-k", windows W.swapUp)
+    , ("M-h", sendMessage Shrink)
+    , ("M-l", sendMessage Expand)
+    ]
+
+-- Layout configuration
+myLayout = avoidStruts . smartBorders $ mySpacing myTiled ||| mySpacing (Mirror myTiled) ||| mySpacing myThreeCol ||| noBorders Full
+  where
+    mySpacing = spacingRaw False (Border 2 2 2 2) True (Border 2 2 2 2) True
+    myTiled = renamed [Replace "Tall"] $ Tall 1 (3/100) (1/2)
+    myThreeCol = renamed [Replace "ThreeCol"] $ ThreeColMid 1 (3/100) (1/2)
+
+-- Window management rules
 myManageHook :: ManageHook
 myManageHook = composeAll
-    [ className =? "MPlayer" --> doFloat
-    , className =? "GIMP" --> doFloat
-    , className =? "Conky" --> doIgnore
+    [ className =? "MPlayer"        --> doFloat
+    , className =? "GIMP"           --> doShift "art"
+    , className =? "krita"          --> doShift "art"
+    , className =? "Conky"          --> doIgnore
+    , className =? "librewolf"      --> doShift "www"
+    , className =? "firefox"        --> doShift "www"
+    , className =? "Chromium"       --> doShift "www"
+    , className =? "code"           --> doShift "dev"
+    , className =? "VSCodium"       --> doShift "dev"
+    , className =? "emacs"          --> doShift "dev"
+    , className =? "vlc"            --> doShift "media"
+    , className =? "Spotify"        --> doShift "media"
     , resource  =? "desktop_window" --> doIgnore
-    , resource  =? "kdesktop" --> doIgnore
+    , resource  =? "kdesktop"       --> doIgnore
+    , isDialog                      --> doCenterFloat
     ] <+> namedScratchpadManageHook myScratchPads
 
-myScratchPads = [ NS "terminal" spawnTerm findTerm manageTerm
-                , NS "cmus" spawnCmus findCmus manageCmus
-                ]
-
-    where
-    spawnTerm = myTerminal ++ " -T scratchpad"
+-- Scratchpad definitions
+myScratchPads :: [NamedScratchpad]
+myScratchPads =
+    [ NS "terminal" spawnTerm findTerm manageTerm
+    , NS "cmus" spawnCmus findCmus manageCmus
+    , NS "htop" spawnHtop findHtop manageHtop
+    ]
+  where
+    spawnTerm = myTerminal ++ " --title=scratchpad"
     findTerm = title =? "scratchpad"
     manageTerm = customFloating $ W.RationalRect l t w h
-                 where
+               where
                  h = 0.9
                  w = 0.9
-                 t = 0.95 -h
-                 l = 0.95 -w
-    spawnCmus = myTerminal ++ " -T cmus -e 'cmus'"
+                 t = 0.95 - h
+                 l = 0.95 - w
+
+    spawnCmus = myTerminal ++ " --title=cmus -e cmus"
     findCmus = title =? "cmus"
     manageCmus = customFloating $ W.RationalRect l t w h
-                 where
-                 h = 0.9
-                 w = 0.9
-                 t = 0.95 -h
-                 l = 0.95 -w
+               where
+                 h = 0.6
+                 w = 0.8
+                 t = 0.7 - h
+                 l = 0.9 - w
 
+    spawnHtop = myTerminal ++ " --title=htop -e htop"
+    findHtop = title =? "htop"
+    manageHtop = customFloating $ W.RationalRect l t w h
+               where
+                 h = 0.8
+                 w = 0.8
+                 t = 0.9 - h
+                 l = 0.9 - w
+
+-- Xmobar configuration with matching theme colors
+myXmobarPP :: Handle -> PP
+myXmobarPP xmproc = def
+    { ppOutput          = hPutStrLn xmproc
+    , ppSep             = xmobarColor comment "" " • "
+    , ppTitleSanitize   = xmobarStrip
+    , ppCurrent         = wrap " " "" . xmobarColor pink "" . wrap "[" "]"
+    , ppVisible         = wrap " " "" . xmobarColor blue "" . wrap "(" ")"
+    , ppHidden          = wrap " " "" . xmobarColor foreground ""
+    , ppHiddenNoWindows = wrap " " "" . xmobarColor comment ""
+    , ppUrgent          = wrap " " "" . xmobarColor background red . wrap "!" "!"
+    , ppTitle           = xmobarColor yellow "" . shorten 60
+    , ppLayout          = xmobarColor aqua "" .
+                         (\x -> case x of
+                             "Tall"         -> " []= "
+                             "Mirror Tall"  -> " TTT "
+                             "ThreeCol"     -> " ||| "
+                             "Full"         -> " [ ] "
+                             "Spacing Tall" -> " [.]= " 
+                             _              -> " " ++ x ++ " ")
+    , ppOrder           = \[ws, l, t] -> [ws, l, t]
+    }
+
+-- Startup applications
+myStartupHook :: X ()
 myStartupHook = do
     setWMName "LG3D"
-    spawnOnce "xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal &"
-    spawnOnce "nm-applet &"
-    spawnOnce "compton &"
-    spawnOnce "nitrogen --restore &"
-    spawnOnce "stalonetray &"
-    spawnOnce "caffeine-indicator &"
+    spawnOnce "xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal"
+    spawnOnce "xmobar"
+    spawnOnce "nm-applet"
+    spawnOnce "picom --config ~/.config/picom/picom.conf"
+    spawnOnce "nitrogen --restore"
+    spawnOnce "stalonetray"
+    spawnOnce "caffeine-indicator"
+    spawnOnce "dunst"
+    -- spawnOnce "redshift -l 40.7:-74.0" -- Blue light filter (adjust coordinates)
