@@ -250,7 +250,7 @@ myScratchPads =
                  l = 0.9 - w
 #+END_SRC
 
-**Xmobar Config
+** Xmobar Config
 
 #+BEGIN_SRC haskell
 -- Xmobar configuration with matching theme colors
