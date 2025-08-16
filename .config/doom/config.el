@@ -65,4 +65,5 @@
       :desc "Add a buffer current perspective" "+" #'persp-add-buffer
       :desc "Remove perspective by name"       "-" #'persp-remove-by-name)
 
-(setq doom-theme 'doom-tomorrow-night)
+(setq doom-theme 'doom-spacegrey)
+(autoload 'dirvish-find-entry-a "dirvish" nil t)
