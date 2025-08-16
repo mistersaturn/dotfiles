@@ -120,7 +120,7 @@ myConfig = def
 
 #+BEGIN_SRC haskell
 myWorkspaces :: [String]
-myWorkspaces = ["idle", "www", "dev", "media", "art"]
+myWorkspaces = ["idle", "www", "dev", "media", "gfx"]
 #+END_SRC
 
 ** Keybindings (Global)
@@ -194,8 +194,8 @@ myLayout = avoidStruts . smartBorders $ mySpacing myTiled ||| mySpacing (Mirror 
 myManageHook :: ManageHook
 myManageHook = composeAll
     [ className =? "MPlayer"        --> doFloat
-    , className =? "GIMP"           --> doShift "art"
-    , className =? "krita"          --> doShift "art"
+    , className =? "GIMP"           --> doShift "gfx"
+    , className =? "krita"          --> doShift "gfx"
     , className =? "Conky"          --> doIgnore
     , className =? "librewolf"      --> doShift "www"
     , className =? "firefox"        --> doShift "www"
