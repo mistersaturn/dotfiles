@@ -22,7 +22,6 @@ import System.Exit (exitSuccess)
 
 import qualified XMonad.StackSet as W
 
--- Terminal and appearance settings
 myTerminal :: String
 myTerminal = "xfce4-terminal"
 
@@ -53,7 +52,6 @@ blue        = "#7aa6da"
 purple      = "#c397d8"
 pink        = "#EC93D3"
 
--- Main configuration
 main :: IO ()
 main = do
     xmproc <- spawnPipe "xmobar ~/.config/xmobar/xmobarrc"
@@ -72,11 +70,9 @@ myConfig = def
     }
     `additionalKeysP` myKeys
 
--- Workspace names
 myWorkspaces :: [String]
-myWorkspaces = ["idle", "www", "dev", "media", "art"]
+myWorkspaces = ["idle", "www", "dev", "media", "gfx"]
 
--- Key bindings
 myKeys :: [(String, X ())]
 myKeys =
     -- Launch applications
@@ -128,19 +124,17 @@ myKeys =
     , ("M-l", sendMessage Expand)
     ]
 
--- Layout configuration
 myLayout = avoidStruts . smartBorders $ mySpacing myTiled ||| mySpacing (Mirror myTiled) ||| mySpacing myThreeCol ||| noBorders Full
   where
     mySpacing = spacingRaw False (Border 2 2 2 2) True (Border 2 2 2 2) True
     myTiled = renamed [Replace "Tall"] $ Tall 1 (3/100) (1/2)
     myThreeCol = renamed [Replace "ThreeCol"] $ ThreeColMid 1 (3/100) (1/2)
 
--- Window management rules
 myManageHook :: ManageHook
 myManageHook = composeAll
     [ className =? "MPlayer"        --> doFloat
-    , className =? "GIMP"           --> doShift "art"
-    , className =? "krita"          --> doShift "art"
+    , className =? "GIMP"           --> doShift "gfx"
+    , className =? "krita"          --> doShift "gfx"
     , className =? "Conky"          --> doIgnore
     , className =? "librewolf"      --> doShift "www"
     , className =? "firefox"        --> doShift "www"
@@ -213,16 +207,11 @@ myXmobarPP xmproc = def
     , ppOrder           = \[ws, l, t] -> [ws, l, t]
     }
 
--- Startup applications
-myStartupHook :: X ()
 myStartupHook = do
     setWMName "LG3D"
-    spawnOnce "xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal"
-    spawnOnce "xmobar"
-    spawnOnce "nm-applet"
-    spawnOnce "picom --config ~/.config/picom/picom.conf"
-    spawnOnce "nitrogen --restore"
-    spawnOnce "stalonetray"
-    spawnOnce "caffeine-indicator"
-    spawnOnce "dunst"
-    -- spawnOnce "redshift -l 40.7:-74.0" -- Blue light filter (adjust coordinates)
+    spawnOnce "xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal &"
+    spawnOnce "nm-applet &"
+    spawnOnce "compton &"
+    spawnOnce "nitrogen --restore &"
+    spawnOnce "stalonetray &"
+    spawnOnce "caffeine-indicator &"
