@@ -56,6 +56,7 @@
       doom-modeline-bar-width 5   ;; sets right bar width
       doom-modeline-persp-name t  ;; adds perspective name to modeline
       doom-modeline-persp-icon t) ;; adds folder icon next to persp name
+      doom-modeline-major-mode-color-icon t) ;; adds major mode icon (color)
 
 (map! :leader
       :desc "Switch to perspective NAME"       "DEL" #'persp-switch
@@ -65,5 +66,4 @@
       :desc "Add a buffer current perspective" "+" #'persp-add-buffer
       :desc "Remove perspective by name"       "-" #'persp-remove-by-name)
 
-(setq doom-theme 'doom-spacegrey)
-(autoload 'dirvish-find-entry-a "dirvish" nil t)
+(setq doom-theme 'doom-tomorrow-night)
