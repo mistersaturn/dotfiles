@@ -96,17 +96,3 @@ eval "$(starship init bash)"
 export _JAVA_AWT_WM_NONREPARENTING=1
 . "$HOME/.cargo/env"
 source $HOME/.config/bash-config/bashrc.bash
-# >>> juliaup initialize >>>
-
-# !! Contents within this block are managed by juliaup !!
-
-case ":$PATH:" in
-    *:/home/dean/.juliaup/bin:*)
-        ;;
-
-    *)
-        export PATH=/home/dean/.juliaup/bin${PATH:+:${PATH}}
-        ;;
-esac
-
-# <<< juliaup initialize <<<
