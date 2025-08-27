@@ -114,11 +114,6 @@
   :config
   (which-key-mode))
 
-(global-set-key (kbd "C-=") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
-(global-set-key [C-wheel-up] 'text-scale-increase)
-(global-set-key [C-wheel-down] 'text-scale-decrease)
-
 (use-package dired-open
   :ensure t
   :config
@@ -147,9 +142,6 @@
 
 (require 'org-tempo)
 
-(setq delete-by-moving-to-trash t
-      trash-directory "~/.local/share/Trash/files/")
-
 (defun center-text (str)
   (let* ((frame-chars (/ (frame-pixel-width) (frame-char-width)))
          (pad (/ (- frame-chars (length str)) 48)))
@@ -170,3 +162,11 @@
       (switch-to-buffer buf))))
 
 (add-hook 'emacs-startup-hook #'my-splash)
+
+(setq delete-by-moving-to-trash t
+      trash-directory "~/.local/share/Trash/files/")
+
+(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key [C-wheel-up] 'text-scale-increase)
+(global-set-key [C-wheel-down] 'text-scale-decrease)
