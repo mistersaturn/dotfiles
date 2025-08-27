@@ -44,8 +44,8 @@
 
 (add-hook 'after-init-hook #'elpaca-process-queues)
 (elpaca `(,@elpaca-order))
-(elpaca-wait) ;; Ensure Elpaca finishes before continuing
-
+(elpaca-wait) ;; Ensure Elpaca bootstrap finishes before continuing
+;; use-package support for Elpaca
 (elpaca elpaca-use-package
   (elpaca-use-package-mode))
 
@@ -80,34 +80,31 @@
     :prefix "SPC"
     :global-prefix "M-SPC")
 
-  ;; Utility Keybindings
-  (dean/leader-keys
-    "." '(find-file :wk "Find file")
-    "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config (org)")
-    "TAB TAB" '(comment-line :wk "Comment lines")
-    "h" '(:ignore t :wk "Help")
-    "h f" '(describe-function :wk "Describe function")
-    "h v" '(describe-variable :wk "Describe variable")
-    "h r r" '((lambda () (interactive) (load-file "~/.config/emacs/init.el")) :wk "Reload emacs config (init.el)"))
+(dean/leader-keys
+  "." '(find-file :wk "Find file")
+  "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config (org)")
+  "TAB TAB" '(comment-line :wk "Comment lines")
+  "h" '(:ignore t :wk "Help")
+  "h f" '(describe-function :wk "Describe function")
+  "h v" '(describe-variable :wk "Describe variable")
+  "h r r" '((lambda () (interactive) (load-file "~/.config/emacs/init.el")) :wk "Reload emacs config (init.el)"))
 
-  ;; Buffer Keybindings
-  (dean/leader-keys
-    "b"  '(:ignore t :wk "Buffers")
-    "b b" '(switch-to-buffer :wk "Switch buffer")
-    "b i" '(ibuffer :wk "Ibuffer")
-    "b k" '(kill-this-buffer :wk "Kill buffer")
-    "b n" '(next-buffer :wk "Next buffer")
-    "b p" '(previous-buffer :wk "Previous buffer")
-    "b r" '(revert-buffer :wk "Reload buffer"))
+(dean/leader-keys
+  "b"  '(:ignore t :wk "Buffers")
+  "b b" '(switch-to-buffer :wk "Switch buffer")
+  "b i" '(ibuffer :wk "Ibuffer")
+  "b k" '(kill-this-buffer :wk "Kill buffer")
+  "b n" '(next-buffer :wk "Next buffer")
+  "b p" '(previous-buffer :wk "Previous buffer")
+  "b r" '(revert-buffer :wk "Reload buffer"))
 
-  ;; Evaluation Keybindings
-  (dean/leader-keys
-    "e" '(:ignore t :wk "Evaluate")
-    "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
-    "e d" '(eval-defun :wk "Evaluate defun containing or after point")
-    "e e" '(eval-expression :wk "Evaluate an elisp expression")
-    "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")
-    "e r" '(eval-region :wk "Evaluate elisp in region")))
+(dean/leader-keys
+  "e" '(:ignore t :wk "Evaluate")
+  "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
+  "e d" '(eval-defun :wk "Evaluate defun containing or after point")
+  "e e" '(eval-expression :wk "Evaluate an elisp expression")
+  "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")
+  "e r" '(eval-region :wk "Evaluate elisp in region")))
 
 (use-package which-key
   :ensure t
@@ -142,26 +139,30 @@
 
 (require 'org-tempo)
 
-(defun center-text (str)
-  (let* ((frame-chars (/ (frame-pixel-width) (frame-char-width)))
-         (pad (/ (- frame-chars (length str)) 48)))
-    (concat (make-string (max 0 pad) ?\s) str "\n")))
+(defun dashboard-banner-title ()
+  "Set a colorful title for the dashboard banner."
+  (propertize "TREEMACS Really Whoops The Unicorn's Ass!"))
 
-(defun my-splash ()
-  (when (display-graphic-p)
-    (let ((buf (get-buffer-create "*TREEMACS-42069*")))
-      (with-current-buffer buf
-        (erase-buffer)
-        (let* ((img-path "~/.config/emacs/.images/splash.png")
-               (max-width (- (frame-pixel-width) 60))
-               (img (create-image img-path nil nil :max-width max-width)))
-          (insert-image img)
-          (insert "\n\n"))
-	(insert (center-text "The most beautiful things are not perfect, they are special. - Bob Marley"))
-	(read-only-mode 1))
-      (switch-to-buffer buf))))
-
-(add-hook 'emacs-startup-hook #'my-splash)
+(use-package dashboard
+  :ensure t 
+  :init
+  (setq initial-buffer-choice 'dashboard-open)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-banner-logo-title (dashboard-banner-title))
+  ;;(setq dashboard-startup-banner 'logo) ;; use standard emacs logo as banner
+  (setq dashboard-startup-banner "~/.config/emacs/.images/splash.png")  ;; use custom image as banner
+  (setq dashboard-center-content t) ;; set to 't' for centered content
+  (setq dashboard-items '((recents . 5)
+			  (agenda . 5 )
+			  (bookmarks . 3)
+			  (projects . 3)
+			  (registers . 3)))
+  :custom 
+  (dashboard-modify-heading-icons '((recents . "file-text")
+				      (bookmarks . "book")))
+  :config
+  (dashboard-setup-startup-hook))
 
 (setq delete-by-moving-to-trash t
       trash-directory "~/.local/share/Trash/files/")
