@@ -148,15 +148,6 @@
   (which-key-mode))
 #+end_src
 
-
-* Zooming
-#+begin_src emacs-lisp
-(global-set-key (kbd "C-=") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
-(global-set-key [C-wheel-up] 'text-scale-increase)
-(global-set-key [C-wheel-down] 'text-scale-decrease)
-#+end_src
-
 * Dired
 ** Dired Open
 #+begin_src emacs-lisp
@@ -206,12 +197,6 @@
 (require 'org-tempo)
 #+end_src
 
-* Trash Can
-#+begin_src emacs-lisp
-(setq delete-by-moving-to-trash t
-      trash-directory "~/.local/share/Trash/files/")
-#+end_src
-
 * Splash Screen
 - Replaces vanilla GNU/Emacs splash screen with a custom one
 #+begin_src emacs-lisp
@@ -236,3 +221,19 @@
 
 (add-hook 'emacs-startup-hook #'my-splash)
 #+end_src
+
+* Trash Can
+#+begin_src emacs-lisp
+(setq delete-by-moving-to-trash t
+      trash-directory "~/.local/share/Trash/files/")
+#+end_src
+
+
+* Zooming
+#+begin_src emacs-lisp
+(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key [C-wheel-up] 'text-scale-increase)
+(global-set-key [C-wheel-down] 'text-scale-decrease)
+#+end_src
+
