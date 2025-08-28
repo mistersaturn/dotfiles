@@ -74,13 +74,13 @@
   :after evil
   :config
   (general-evil-setup)
-  (general-create-definer dean/leader-keys
+  (general-create-definer tree/leader-keys
     :states '(normal insert visual emacs)
     :keymaps 'override
     :prefix "SPC"
     :global-prefix "M-SPC")
 
-(dean/leader-keys
+(tree/leader-keys
   "." '(find-file :wk "Find file")
   "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config (org)")
   "TAB TAB" '(comment-line :wk "Comment lines")
@@ -89,7 +89,7 @@
   "h v" '(describe-variable :wk "Describe variable")
   "h r r" '((lambda () (interactive) (load-file "~/.config/emacs/init.el")) :wk "Reload emacs config (init.el)"))
 
-(dean/leader-keys
+(tree/leader-keys
   "b"  '(:ignore t :wk "Buffers")
   "b b" '(switch-to-buffer :wk "Switch buffer")
   "b i" '(ibuffer :wk "Ibuffer")
@@ -98,7 +98,7 @@
   "b p" '(previous-buffer :wk "Previous buffer")
   "b r" '(revert-buffer :wk "Reload buffer"))
 
-(dean/leader-keys
+(tree/leader-keys
   "e" '(:ignore t :wk "Evaluate")
   "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
   "e d" '(eval-defun :wk "Evaluate defun containing or after point")
@@ -142,27 +142,57 @@
 (defun dashboard-banner-title ()
   "Set a colorful title for the dashboard banner."
   (propertize "TREEMACS Really Whoops The Unicorn's Ass!"))
+(custom-set-variables)
+(custom-set-faces
+ '(dashboard-banner-logo-title ((t (:inherit default :foreground "spring green")))))
 
 (use-package dashboard
-  :ensure t 
-  :init
-  (setq initial-buffer-choice 'dashboard-open)
-  (setq dashboard-set-heading-icons t)
-  (setq dashboard-set-file-icons t)
-  (setq dashboard-banner-logo-title (dashboard-banner-title))
-  ;;(setq dashboard-startup-banner 'logo) ;; use standard emacs logo as banner
-  (setq dashboard-startup-banner "~/.config/emacs/.images/splash.png")  ;; use custom image as banner
-  (setq dashboard-center-content t) ;; set to 't' for centered content
-  (setq dashboard-items '((recents . 5)
-			  (agenda . 5 )
-			  (bookmarks . 3)
-			  (projects . 3)
-			  (registers . 3)))
-  :custom 
-  (dashboard-modify-heading-icons '((recents . "file-text")
-				      (bookmarks . "book")))
+   :ensure t 
+   :init
+   (setq initial-buffer-choice 'dashboard-open)
+   (setq dashboard-set-heading-icons t)
+   (setq dashboard-set-file-icons t)
+   (setq dashboard-banner-logo-title (dashboard-banner-title))
+   ;;(setq dashboard-startup-banner 'logo) ;; use standard emacs logo as banner
+   (setq dashboard-startup-banner "~/.config/emacs/.images/splash.png")  ;; use custom image as banner
+   (setq dashboard-center-content t) ;; set to 't' for centered content
+   (setq dashboard-items '((recents . 5)
+			   (agenda . 5 )
+			   (bookmarks . 3)
+			   (projects . 3)
+			   (registers . 3)))
+   :custom 
+   (dashboard-modify-heading-icons '((recents . "file-text")
+				       (bookmarks . "book")))
+   :config
+   (dashboard-setup-startup-hook))
+
+;; Install and configure Neotree
+(use-package neotree
+  :ensure t
+  :after dashboard
   :config
-  (dashboard-setup-startup-hook))
+  (setq neo-window-width 35
+        neo-window-fixed-size nil
+        neo-smart-open t
+        neo-autorefresh t
+        neo-theme (if (display-graphic-p) 'icons 'arrow)
+        neo-window-position 'left)
+
+  ;; Track if Neotree has opened once
+  (defvar my/dashboard-neotree-opened nil
+    "Prevent Neotree from reopening after the dashboard initializes once.")
+
+  ;; Hook: Open Neotree after Dashboard loads, only once
+  (add-hook 'dashboard-after-initialize-hook
+            (lambda ()
+              (unless my/dashboard-neotree-opened
+                (let ((root (or (ignore-errors (project-root (project-current)))
+                                user-emacs-directory)))
+                  (neotree-show)
+                  (neotree-dir root)
+                  (other-window 1)) ;; Return focus to dashboard
+                (setq my/dashboard-neotree-opened t)))))
 
 (setq delete-by-moving-to-trash t
       trash-directory "~/.local/share/Trash/files/")
