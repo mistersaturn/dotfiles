@@ -64,7 +64,7 @@
 #+end_src
 
 * Evil Mode
-VI do you do this to yourself?
+- VI do you do this to yourself?
 ** Initialize
 #+begin_src emacs-lisp
 (use-package evil
@@ -209,7 +209,7 @@ VI do you do this to yourself?
 
 * Splash Screen
 ** Dashboard Banner Title Color
--Sets the color of the Dashboard Banner Title outside of the use-package context
+- Sets the color of the Dashboard Banner Title outside of the use-package context
 #+begin_src emacs-lisp
 (defun dashboard-banner-title ()
   "Set a colorful title for the dashboard banner."
