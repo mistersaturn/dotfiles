@@ -1,8 +1,8 @@
 #+auto_tangle: t
 #+title: Emacs Config
 #+author: Dean Smith
-#+date: 08/23/2025
-#+description: Personal Emacs Config
+#+date: 08/23/2025 - Last Modified: 08/28/2025
+#+description: Personal Emacs Config -- TREEMACS Version
 #+startup: showeverything
 #+property: header-args:emacs-lisp :tangle init.el
 
@@ -64,6 +64,7 @@
 #+end_src
 
 * Evil Mode
+VI do you do this to yourself?
 ** Initialize
 #+begin_src emacs-lisp
 (use-package evil
@@ -103,7 +104,7 @@
   :after evil
   :config
   (general-evil-setup)
-  (general-create-definer dean/leader-keys
+  (general-create-definer tree/leader-keys
     :states '(normal insert visual emacs)
     :keymaps 'override
     :prefix "SPC"
@@ -112,7 +113,7 @@
 ** Utility Keybindings
 - Random keybindings for various tasks
 #+begin_src emacs-lisp
-  (dean/leader-keys
+  (tree/leader-keys
     "." '(find-file :wk "Find file")
     "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) :wk "Edit emacs config (org)")
     "TAB TAB" '(comment-line :wk "Comment lines")
@@ -124,7 +125,7 @@
 ** Buffer Keybindings
 - Keybindings for buffer navigation
 #+begin_src emacs-lisp
-  (dean/leader-keys
+  (tree/leader-keys
     "b"  '(:ignore t :wk "Buffers")
     "b b" '(switch-to-buffer :wk "Switch buffer")
     "b i" '(ibuffer :wk "Ibuffer")
@@ -136,7 +137,7 @@
 ** Evaluation Keybindings
 - Keybindings for evaluating code
 #+begin_src emacs-lisp
-  (dean/leader-keys
+  (tree/leader-keys
     "e" '(:ignore t :wk "Evaluate")
     "e b" '(eval-buffer :wk "Evaluate elisp in buffer")
     "e d" '(eval-defun :wk "Evaluate defun containing or after point")
@@ -178,6 +179,7 @@
 
 * Org Mode
 ** Org Auto Tangle
+- Auto-Tangle code to another file
 #+begin_src emacs-lisp
 (use-package org-auto-tangle
   :ensure t
@@ -186,6 +188,7 @@
 #+end_src
 
 ** Org Bullets
+- Put 'em back where they belong...
 #+begin_src emacs-lisp
 (use-package org-bullets
   :ensure t
@@ -193,6 +196,7 @@
 #+end_src
 
 ** Org Directory
+- The Unicorn lives here, according to lore
 #+begin_src emacs-lisp
 (setq org-directory "~/org/")
 #+end_src
@@ -203,17 +207,22 @@
 (require 'org-tempo)
 #+end_src
 
-;; Splash screen title coloring
-#+begin_src emacs-lisp 
+* Splash Screen
+** Dashboard Banner Title Color
+-Sets the color of the Dashboard Banner Title outside of the use-package context
+#+begin_src emacs-lisp
 (defun dashboard-banner-title ()
   "Set a colorful title for the dashboard banner."
   (propertize "TREEMACS Really Whoops The Unicorn's Ass!"))
+(custom-set-variables)
+(custom-set-faces
+ '(dashboard-banner-logo-title ((t (:inherit default :foreground "spring green")))))
 #+end_src
 
-* Splash Screen
+** Dashboard    
 - Replaces vanilla GNU/Emacs splash screen with a custom one
 #+begin_src emacs-lisp
-  (use-package dashboard
+ (use-package dashboard
     :ensure t 
     :init
     (setq initial-buffer-choice 'dashboard-open)
@@ -235,13 +244,46 @@
     (dashboard-setup-startup-hook))
   #+end_src
 
+** Neotree for Dashboard
+- This makes TREEMACS "TREEMACS" heh
+#+begin_src emacs-lisp
+;; Install and configure Neotree
+(use-package neotree
+  :ensure t
+  :after dashboard
+  :config
+  (setq neo-window-width 35
+        neo-window-fixed-size nil
+        neo-smart-open t
+        neo-autorefresh t
+        neo-theme (if (display-graphic-p) 'icons 'arrow)
+        neo-window-position 'left)
+
+  ;; Track if Neotree has opened once
+  (defvar my/dashboard-neotree-opened nil
+    "Prevent Neotree from reopening after the dashboard initializes once.")
+
+  ;; Hook: Open Neotree after Dashboard loads, only once
+  (add-hook 'dashboard-after-initialize-hook
+            (lambda ()
+              (unless my/dashboard-neotree-opened
+                (let ((root (or (ignore-errors (project-root (project-current)))
+                                user-emacs-directory)))
+                  (neotree-show)
+                  (neotree-dir root)
+                  (other-window 1)) ;; Return focus to dashboard
+                (setq my/dashboard-neotree-opened t)))))
+#+end_src
+  
 * Trash Can
+- Give a Hoot, Don't Pollute!
 #+begin_src emacs-lisp
 (setq delete-by-moving-to-trash t
       trash-directory "~/.local/share/Trash/files/")
 #+end_src
 
 * Zooming
+- Works with keys or mouse
 #+begin_src emacs-lisp
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
