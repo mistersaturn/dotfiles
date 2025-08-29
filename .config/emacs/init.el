@@ -127,38 +127,50 @@
   :ensure t
   :hook (dired-mode . all-the-icons-dired-mode))
 
-(defface treemacs-modeline-buffer-namecol
-    '((t (:background "#423f78" :foreground "#87e884" :inherit bold)))
-    "Face for the Treemacs modeline buffer name color."
-    :group 'treemacs)
+(custom-set-faces
+ '(mode-line ((t (:background "#282c34" :foreground "#abb2bf" :box nil))))
+ '(mode-line-inactive ((t (:background "#1c1f24" :foreground "#5c6370" :box nil)))))
 
-  (defface treemacs-modeline-major-mode-namecol
-    '((t (:background "#3357d3" :foreground "#83e0d0" :inherit bold)))
-    "Face for the Treemacs modeline buffer name color."
-    :group 'treemacs)
+(defface treemacs-modeline-buffer-namecol
+  '((t (:background "#423f78" :foreground "#87e884" :inherit bold)))
+  "Face for the Treemacs modeline buffer name color."
+  :group 'treemacs)
+
+(defface treemacs-modeline-major-mode-namecol
+  '((t (:background "#3357d3" :foreground "#83e0d0" :inherit bold)))
+  "Face for the Treemacs modeline buffer name color."
+  :group 'treemacs)
 
 (defun treemacs-modeline--buffer-name ()
   (format " %s " (buffer-name)))
 
 (defun treemacs-modeline--major-mode-name ()
   (format " %s " (capitalize
-                   (string-remove-suffix "-mode" (symbol-name major-mode)))))
+		  (string-remove-suffix "-mode" (symbol-name major-mode)))))
 
-  (defvar-local treemacs-modeline-buffer-name
-    '(:eval (propertize (treemacs-modeline--buffer-name) 'face 'treemacs-modeline-buffer-namecol)))
+(defvar-local treemacs-modeline-buffer-name
+  '(:eval (propertize (treemacs-modeline--buffer-name)
+		      'face 'treemacs-modeline-buffer-namecol)))
 
-  (defvar-local treemacs-modeline-major-mode
-    '(:eval (propertize (treemacs-modeline--major-mode-name) 'face 'treemacs-modeline-major-mode-namecol)))
+(defvar-local treemacs-modeline-major-mode
+  '(:eval (propertize (treemacs-modeline--major-mode-name)
+		      'face 'treemacs-modeline-major-mode-namecol)))
 
-  (setq-default mode-line-format
-    (list "%e"
-	  "  :: "
-	  treemacs-modeline-buffer-name
-	  " :: "
-	  treemacs-modeline-major-mode))
+(setq-default mode-line-format
+      '("%e"
+	"  ::  "
+	treemacs-modeline-buffer-name
+	" 󰚟 "
+	treemacs-modeline-major-mode
+	"   "
+	mode-line-position
+	"  "
+	vc-mode
+	"                  "
+	(:eval (format-time-string "%b-%d-%Y"))))
 
-  (put 'treemacs-modeline-buffer-name 'risky-local-variable t)
-  (put 'treemacs-modeline-major-mode 'risky-local-variable t)
+(put 'treemacs-modeline-buffer-name 'risky-local-variable t)
+(put 'treemacs-modeline-major-mode 'risky-local-variable t)
 
 (use-package org-auto-tangle
   :ensure t
@@ -206,7 +218,7 @@
   :ensure t
   :after dashboard
   :config
-  (setq neo-window-width 25
+  (setq neo-window-width 15
         neo-window-fixed-size nil
         neo-smart-open t
         neo-autorefresh t
