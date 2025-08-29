@@ -127,6 +127,9 @@
   :ensure t
   :hook (dired-mode . all-the-icons-dired-mode))
 
+(use-package nerd-icons
+  :ensure t)
+
 (custom-set-faces
  '(mode-line ((t (:background "#282c34" :foreground "#abb2bf" :box nil))))
  '(mode-line-inactive ((t (:background "#1c1f24" :foreground "#5c6370" :box nil)))))
@@ -138,36 +141,52 @@
 
 (defface treemacs-modeline-major-mode-namecol
   '((t (:background "#3357d3" :foreground "#83e0d0" :inherit bold)))
-  "Face for the Treemacs modeline buffer name color."
+  "Face for the Treemacs modeline major mode color."
   :group 'treemacs)
 
 (defun treemacs-modeline--buffer-name ()
   (format " %s " (buffer-name)))
 
-(defun treemacs-modeline--major-mode-name ()
-  (format " %s " (capitalize
-		  (string-remove-suffix "-mode" (symbol-name major-mode)))))
+(defun treemacs-modeline--major-mode ()
+  (let ((icon (or (nerd-icons-icon-for-mode major-mode)
+		  (nerd-icons-faicon "nf-fa-file_text_o"))) ;; fallback icon
+	(name (capitalize (string-remove-suffix "-mode" (symbol-name major-mode)))))
+    (format " %s  %s " icon name)))
+
+(defun treemacs-modeline--fill-right (reserve)
+  "Return empty space leaving RESERVE space on the right."
+  (propertize " "
+	      'display `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))))
+
+(defun treemacs-modeline--clock ()
+  "Return formatted time string."
+  (format-time-string " %a 󰸗 %b %d  %I:%M %p"))
 
 (defvar-local treemacs-modeline-buffer-name
   '(:eval (propertize (treemacs-modeline--buffer-name)
 		      'face 'treemacs-modeline-buffer-namecol)))
 
 (defvar-local treemacs-modeline-major-mode
-  '(:eval (propertize (treemacs-modeline--major-mode-name)
+  '(:eval (propertize (treemacs-modeline--major-mode)
 		      'face 'treemacs-modeline-major-mode-namecol)))
 
 (setq-default mode-line-format
-      '("%e"
-	"  ::  "
-	treemacs-modeline-buffer-name
-	" 󰚟 "
-	treemacs-modeline-major-mode
-	"   "
-	mode-line-position
-	"  "
-	vc-mode
-	"                  "
-	(:eval (format-time-string "%b-%d-%Y"))))
+	      '("%e"
+		"  ::  "
+		treemacs-modeline-buffer-name
+		" 󰚟 "
+		treemacs-modeline-major-mode
+		"  "
+		mode-line-position
+		"  "
+		vc-mode
+		;; Dynamic padding for right-aligned clock
+		(:eval (treemacs-modeline--fill-right 30))
+		;; Right-aligned clock
+		(:eval (treemacs-modeline--clock))))
+
+;; Force mode-line to update every 60 seconds
+(run-at-time t 60 (lambda () (force-mode-line-update t)))
 
 (put 'treemacs-modeline-buffer-name 'risky-local-variable t)
 (put 'treemacs-modeline-major-mode 'risky-local-variable t)
