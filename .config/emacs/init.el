@@ -118,6 +118,7 @@
 	'(("gif" . "gimp")
 	  ("jpg" . "gimp")
 	  ("png" . "gimp")
+          ("xcf" . "gimp")
 	  ("mkv" . "vlc")
 	  ("mp4" . "vlc")
 	  ("kra" . "krita"))))
@@ -125,6 +126,39 @@
 (use-package all-the-icons-dired
   :ensure t
   :hook (dired-mode . all-the-icons-dired-mode))
+
+(defface treemacs-modeline-buffer-namecol
+    '((t (:background "#423f78" :foreground "#87e884" :inherit bold)))
+    "Face for the Treemacs modeline buffer name color."
+    :group 'treemacs)
+
+  (defface treemacs-modeline-major-mode-namecol
+    '((t (:background "#3357d3" :foreground "#83e0d0" :inherit bold)))
+    "Face for the Treemacs modeline buffer name color."
+    :group 'treemacs)
+
+(defun treemacs-modeline--buffer-name ()
+  (format " %s " (buffer-name)))
+
+(defun treemacs-modeline--major-mode-name ()
+  (format " %s " (capitalize
+                   (string-remove-suffix "-mode" (symbol-name major-mode)))))
+
+  (defvar-local treemacs-modeline-buffer-name
+    '(:eval (propertize (treemacs-modeline--buffer-name) 'face 'treemacs-modeline-buffer-namecol)))
+
+  (defvar-local treemacs-modeline-major-mode
+    '(:eval (propertize (treemacs-modeline--major-mode-name) 'face 'treemacs-modeline-major-mode-namecol)))
+
+  (setq-default mode-line-format
+    (list "%e"
+	  "  :: "
+	  treemacs-modeline-buffer-name
+	  " :: "
+	  treemacs-modeline-major-mode))
+
+  (put 'treemacs-modeline-buffer-name 'risky-local-variable t)
+  (put 'treemacs-modeline-major-mode 'risky-local-variable t)
 
 (use-package org-auto-tangle
   :ensure t
@@ -172,7 +206,7 @@
   :ensure t
   :after dashboard
   :config
-  (setq neo-window-width 35
+  (setq neo-window-width 25
         neo-window-fixed-size nil
         neo-smart-open t
         neo-autorefresh t
