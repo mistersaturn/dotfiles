@@ -1,7 +1,7 @@
 #+auto_tangle: t
 #+title: Emacs Config
 #+author: Dean Smith
-#+date: 08/23/2025 - Last Modified: 08/29/2025
+#+date: 08/23/2025 - Last Modified: 08/30/2025
 #+description: Personal Emacs Config -- TREEMACS Version
 #+startup: showeverything
 #+property: header-args:emacs-lisp :tangle init.el
@@ -98,17 +98,18 @@
 
 * General
 - Handles other keybindings
+** Leader Key
 #+begin_src emacs-lisp
-(use-package general
-  :ensure t
-  :after evil
-  :config
-  (general-evil-setup)
-  (general-create-definer tree/leader-keys
-    :states '(normal insert visual emacs)
-    :keymaps 'override
-    :prefix "SPC"
-    :global-prefix "M-SPC")
+  (use-package general
+    :ensure t
+    :after evil
+    :config
+    (general-evil-setup)
+    (general-create-definer tree/leader-keys
+      :states '(normal insert visual emacs)
+      :keymaps 'override
+      :prefix "SPC"
+      :global-prefix "M-SPC")
 #+end_src
 ** Utility Keybindings
 - Random keybindings for various tasks
@@ -178,6 +179,18 @@
   :hook (dired-mode . all-the-icons-dired-mode))
 #+end_src
 
+* Marginalia
+#+begin_src emacs-lisp
+(use-package marginalia
+ :after vertico
+ :ensure t
+ :custom
+(setq marginalia-annotators
+  '(marginalia-annotators-heavy marginalia-annotators-light)) 
+ :init
+ (marginalia-mode))
+#+end_src
+
 * Modeline Formatting
 #+begin_src emacs-lisp
   (use-package nerd-icons
@@ -229,12 +242,12 @@
 		  treemacs-modeline-buffer-name
 		  " 󰚟 "
 		  treemacs-modeline-major-mode
-		  "  "
+		  "   "
 		  mode-line-position
 		  "  "
 		  vc-mode
 		  ;; Dynamic padding for right-aligned clock
-		  (:eval (treemacs-modeline--fill-right 30))
+		  (:eval (treemacs-modeline--fill-right 28))
 		  ;; Right-aligned clock
 		  (:eval (treemacs-modeline--clock))))
 
@@ -267,6 +280,13 @@
 - The Unicorn lives here, according to lore
 #+begin_src emacs-lisp
 (setq org-directory "~/org/")
+#+end_src
+
+** Org Electric Indent
+- Shocking, to say the least
+#+begin_src emacs-lisp
+(electric-indent-mode -1)
+(setq org-edit-src-content-indentation 0)
 #+end_src
 
 ** Org Tempo
@@ -323,9 +343,11 @@
   (setq neo-window-width 15
         neo-window-fixed-size nil
         neo-smart-open t
+        neo-show-hidden-files t
         neo-autorefresh t
-        neo-theme (if (display-graphic-p) 'icons 'arrow)
-        neo-window-position 'left)
+        neo-theme (if (display-graphic-p) 'nerd-icons 'ascii)
+        neo-window-position 'left
+        neo-mode-line-type 'neotree)
 
   ;; Track if Neotree has opened once
   (defvar my/dashboard-neotree-opened nil
@@ -348,6 +370,22 @@
 #+begin_src emacs-lisp
 (setq delete-by-moving-to-trash t
       trash-directory "~/.local/share/Trash/files/")
+#+end_src
+
+* Vertico
+#+begin_src emacs-lisp
+(use-package vertico
+  :ensure t
+  :bind (:map vertico-map
+         ("C-j" . vertico-next)
+         ("C-k" . vertico-previous)
+         ("C-f" . vertico-exit)
+         :map minibuffer-local-map
+         ("M-h" . backward-kill-word))
+  :custom
+  (vertico-cycle t)
+  :init
+  (vertico-mode))
 #+end_src
 
 * Zooming
