@@ -9,6 +9,36 @@
 #+begin_src emacs-lisp
 ;;; emacs/init.el -*- lexical-binding: t; no-byte-compile: t; coding: utf-8-unix; -*-
 #+end_src
+* Table of Contents :TOC:
+- [[#elpaca-bootstrap][Elpaca Bootstrap]]
+- [[#evil-mode][Evil Mode]]
+  - [[#initialize][Initialize]]
+- [[#evil-collection][Evil Collection]]
+- [[#evil-tutor][Evil Tutor]]
+- [[#general-keybinding-framework][General (Keybinding Framework)]]
+  - [[#leader-key-setup][Leader Key Setup]]
+  - [[#utility-keybindings][Utility Keybindings]]
+  - [[#buffer-keybindings][Buffer Keybindings]]
+  - [[#evaluation-keybindings][Evaluation Keybindings]]
+  - [[#whichkey][WhichKey]]
+- [[#dired-file-manager][Dired (File Manager)]]
+  - [[#dired-open][Dired Open]]
+  - [[#dired-all-the-icons][Dired (All The Icons)]]
+- [[#marginalia][Marginalia]]
+- [[#modeline-formatting][Modeline Formatting]]
+- [[#org-mode][Org Mode]]
+  - [[#org-auto-tangle][Org Auto Tangle]]
+  - [[#org-bullets][Org Bullets]]
+  - [[#org-directory][Org Directory]]
+  - [[#org-electric-indent][Org Electric Indent]]
+  - [[#org-tempo][Org Tempo]]
+- [[#splash-screen-dashboard][Splash Screen (Dashboard)]]
+  - [[#dashboard-banner-title-color][Dashboard Banner Title Color]]
+  - [[#dashboard][Dashboard]]
+  - [[#neotree-for-dashboard][Neotree for Dashboard]]
+- [[#trash-can][Trash Can]]
+- [[#vertico][Vertico]]
+- [[#zooming][Zooming]]
 
 * Elpaca Boostrap
 - Bootstrap code for Elpaca Package Manager
