@@ -127,6 +127,15 @@
   :ensure t
   :hook (dired-mode . all-the-icons-dired-mode))
 
+(use-package marginalia
+ :after vertico
+ :ensure t
+ :custom
+(setq marginalia-annotators
+  '(marginalia-annotators-heavy marginalia-annotators-light)) 
+ :init
+ (marginalia-mode))
+
 (use-package nerd-icons
   :ensure t)
 
@@ -176,12 +185,12 @@
 		treemacs-modeline-buffer-name
 		" 󰚟 "
 		treemacs-modeline-major-mode
-		"  "
+		"   "
 		mode-line-position
 		"  "
 		vc-mode
 		;; Dynamic padding for right-aligned clock
-		(:eval (treemacs-modeline--fill-right 30))
+		(:eval (treemacs-modeline--fill-right 28))
 		;; Right-aligned clock
 		(:eval (treemacs-modeline--clock))))
 
@@ -201,6 +210,9 @@
   :hook (org-mode . org-bullets-mode))
 
 (setq org-directory "~/org/")
+
+(electric-indent-mode -1)
+(setq org-edit-src-content-indentation 0)
 
 (require 'org-tempo)
 
@@ -240,9 +252,11 @@
   (setq neo-window-width 15
         neo-window-fixed-size nil
         neo-smart-open t
+        neo-show-hidden-files t
         neo-autorefresh t
-        neo-theme (if (display-graphic-p) 'icons 'arrow)
-        neo-window-position 'left)
+        neo-theme (if (display-graphic-p) 'nerd-icons 'ascii)
+        neo-window-position 'left
+        neo-mode-line-type 'neotree)
 
   ;; Track if Neotree has opened once
   (defvar my/dashboard-neotree-opened nil
@@ -261,6 +275,19 @@
 
 (setq delete-by-moving-to-trash t
       trash-directory "~/.local/share/Trash/files/")
+
+(use-package vertico
+  :ensure t
+  :bind (:map vertico-map
+         ("C-j" . vertico-next)
+         ("C-k" . vertico-previous)
+         ("C-f" . vertico-exit)
+         :map minibuffer-local-map
+         ("M-h" . backward-kill-word))
+  :custom
+  (vertico-cycle t)
+  :init
+  (vertico-mode))
 
 (global-set-key (kbd "C-=") 'text-scale-increase)
 (global-set-key (kbd "C--") 'text-scale-decrease)
