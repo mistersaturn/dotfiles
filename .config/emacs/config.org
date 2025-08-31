@@ -445,8 +445,7 @@ Enables convenient snippet expansion for common Org structures. For example, typ
 Replaces Emacs' default startup screen with a beautiful, functional dashboard that provides quick access to recent files, projects, and other commonly-used features.
 
 ** Dashboard Banner Title Color
-Custom styling for the dashboard title. The title "TREEMACS Really Whoops The Unicorn's Ass!" is a playful reference to the author's configuration theme.
-
+Custom styling for the dashboard title. 
 #+begin_src emacs-lisp
 ;; Define custom title text for the dashboard
 (defun dashboard-banner-title ()
@@ -567,7 +566,7 @@ Vertico provides a clean, minimal completion interface that enhances Emacs' buil
 #+end_src
 
 * Zooming
-## Text Size Control
+** Text Size Control
 Provides convenient keybindings for adjusting text size both with keyboard shortcuts and mouse wheel, improving accessibility and readability.
 
 #+begin_src emacs-lisp
