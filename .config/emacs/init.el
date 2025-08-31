@@ -53,33 +53,30 @@
 (elpaca elpaca-use-package
   (elpaca-use-package-mode))
 
-;; Dired Open - allows opening files in external applications from Dired
 (use-package dired-open
   :ensure t
   :config
   ;; Define associations between file extensions and external programs
+  ;; Customize these based on your preferred applications
   (setq dired-open-extensions
-	'(("gif" . "gimp")      ;; Open GIF images in GIMP
-	  ("jpg" . "gimp")      ;; Open JPEG images in GIMP  
-	  ("png" . "gimp")      ;; Open PNG images in GIMP
-          ("xcf" . "gimp")      ;; Open GIMP's native format in GIMP
-	  ("mkv" . "vlc")       ;; Open MKV videos in VLC
-	  ("mp4" . "vlc")       ;; Open MP4 videos in VLC
-	  ("kra" . "krita"))))  ;; Open Krita files in Krita
+    '(("gif" . "gimp")      ;; Open GIF images in GIMP
+      ("jpg" . "gimp")      ;; Open JPEG images in GIMP  
+      ("png" . "gimp")      ;; Open PNG images in GIMP
+      ("xcf" . "gimp")      ;; Open GIMP's native format in GIMP
+      ("mkv" . "vlc")       ;; Open MKV videos in VLC
+      ("mp4" . "vlc")       ;; Open MP4 videos in VLC
+      ("kra" . "krita"))))  ;; Open Krita files in Krita
 
-;; Dired All The Icons - adds beautiful icons to Dired file listings
 (use-package all-the-icons-dired
   :ensure t
   ;; Automatically enable icons in all Dired buffers
   :hook (dired-mode . all-the-icons-dired-mode))
 
-;; Emojify - enables emoji rendering throughout Emacs
 (use-package emojify
   :ensure t
   ;; Enable emoji support globally after Emacs finishes initializing
   :hook (after-init . global-emojify-mode))
 
-;; Evil Mode - Vim emulation layer for Emacs
 (use-package evil
   :ensure t
   :demand t  ;; Load immediately, don't defer
@@ -92,19 +89,17 @@
   :config
   (evil-mode 1))  ;; Enable Evil Mode globally
 
-;; Evil Collection - provides Evil Mode keybindings for hundreds of Emacs packages
 (use-package evil-collection
   :ensure t
   :after evil  ;; Load after Evil Mode is available
   :config
   ;; Only enable Evil keybindings for specific modes to avoid conflicts
+  ;; Add more modes to this list as needed
   (setq evil-collection-mode-list '(dashboard dired ibuffer))
   (evil-collection-init))
 
-;; Evil Tutor - interactive Vim tutorial built into Emacs
 (use-package evil-tutor :ensure t)
 
-;; General - unified keybinding framework with leader key support
 (use-package general
   :ensure t
   :after evil
@@ -119,6 +114,9 @@
     :prefix "SPC"       ;; Leader key in Evil states
     :global-prefix "M-SPC")  ;; Leader key in non-Evil contexts
 
+  ;; Define all keybindings within the same use-package block
+  ;; This ensures tree/leader-keys is available when we use it
+  
   ;; Utility Keybindings - Essential operations organized under leader key
   (tree/leader-keys
     "." '(find-file :wk "Find file")  ;; Quick file access
@@ -161,7 +159,6 @@
     "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")   ;; Run expression before cursor
     "e r" '(eval-region :wk "Evaluate elisp in region")))                  ;; Run selected region
 
-;; WhichKey - provides popup help for keybinding discovery
 (use-package which-key
   :ensure t
   :init
@@ -178,9 +175,8 @@
         which-key-idle-delay 0.8                  ;; Show popup after 0.8 seconds
         which-key-max-description-length 25       ;; Truncate long descriptions
         which-key-allow-imprecise-window-fit t    ;; Allow flexible sizing
-        which-key-separator "  "))                ;; Visual separator between key and description
+        which-key-separator " 󰋇  "))              ;; Visual separator between key and description
 
-;; Git Time Machine - interactive interface for browsing Git history
 (use-package git-timemachine
  :ensure t
  :after git-timemachine
@@ -191,7 +187,6 @@
    (evil-define-key 'normal git-timemachine-mode-map (kbd "C-j") 'git-timemachine-show-previous-revision)
    (evil-define-key 'normal git-timemachine-mode-map (kbd "C-k") 'git-timemachine-show-next-revision))
 
-;; Marginalia - adds rich contextual information to completion candidates
 (use-package marginalia
  :after vertico  ;; Load after Vertico completion framework
  :ensure t
@@ -202,7 +197,7 @@
  :init
  (marginalia-mode))  ;; Enable globally
 
-;; Nerd Icons - provide beautiful file type and mode icons
+;; Nerd Icons provide beautiful file type and mode icons
 (use-package nerd-icons
   :ensure t)
 
@@ -230,45 +225,45 @@
 ;; Format major mode with appropriate icon and cleaned name
 (defun treemacs-modeline--major-mode ()
   (let ((icon (or (nerd-icons-icon-for-mode major-mode)
-		  (nerd-icons-faicon "nf-fa-file_text_o"))) ;; fallback icon
-	(name (capitalize (string-remove-suffix "-mode" (symbol-name major-mode)))))
+          (nerd-icons-faicon "nf-fa-file_text_o"))) ;; fallback icon
+    (name (capitalize (string-remove-suffix "-mode" (symbol-name major-mode)))))
     (format " %s  %s " icon name)))
 
 ;; Create flexible spacing for right-aligned elements
 (defun treemacs-modeline--fill-right (reserve)
   "Return empty space leaving RESERVE space on the right."
   (propertize " "
-	      'display `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))))
+      'display `((space :align-to (- (+ right right-fringe right-margin) ,reserve)))))
 
 ;; Format current time and date
 (defun treemacs-modeline--clock ()
   "Return formatted time string."
-  (format-time-string " %a 󰸗 %b %d  %I:%M %p"))
+  (format-time-string " %a %b %d  %I:%M %p"))
 
 ;; Define modeline segments as buffer-local variables
 (defvar-local treemacs-modeline-buffer-name
   '(:eval (propertize (treemacs-modeline--buffer-name)
-		      'face 'treemacs-modeline-buffer-namecol)))
+          'face 'treemacs-modeline-buffer-namecol)))
 
 (defvar-local treemacs-modeline-major-mode
   '(:eval (propertize (treemacs-modeline--major-mode)
-		      'face 'treemacs-modeline-major-mode-namecol)))
+          'face 'treemacs-modeline-major-mode-namecol)))
 
 ;; Assemble the complete modeline format
 (setq-default mode-line-format
-	      '("%e"  ;; Error indicator
-		"  ::  "  ;; Visual separator
-		treemacs-modeline-buffer-name
-		" 󰚟 "  ;; Icon separator
-		treemacs-modeline-major-mode
-		"   "
-		mode-line-position  ;; Cursor position info
-		"  "
-		vc-mode  ;; Version control status
-		;; Dynamic padding for right-aligned clock
-		(:eval (treemacs-modeline--fill-right 28))
-		;; Right-aligned clock
-		(:eval (treemacs-modeline--clock))))
+      '("%e"  ;; Error indicator
+        "    "  ;; Visual separator
+        treemacs-modeline-buffer-name
+        " 󰚟 "  ;; Icon separator
+        treemacs-modeline-major-mode
+        "   "
+        mode-line-position  ;; Cursor position info
+        "  "
+        vc-mode  ;; Version control status
+        ;; Dynamic padding for right-aligned clock
+        (:eval (treemacs-modeline--fill-right 28))
+        ;; Right-aligned clock
+        (:eval (treemacs-modeline--clock))))
 
 ;; Update the clock every minute
 (run-at-time t 60 (lambda () (force-mode-line-update t)))
@@ -277,20 +272,18 @@
 (put 'treemacs-modeline-buffer-name 'risky-local-variable t)
 (put 'treemacs-modeline-major-mode 'risky-local-variable t)
 
-;; Org Auto Tangle - automatically extracts code blocks from Org files
 (use-package org-auto-tangle
   :ensure t
   :defer t  ;; Only load when Org mode is used
   ;; Enable auto-tangling in all Org mode buffers
   :hook (org-mode . org-auto-tangle-mode))
 
-;; Org Bullets - replaces asterisk headers with beautiful Unicode bullets
 (use-package org-bullets
   :ensure t
   ;; Enable pretty bullets in all Org mode buffers
   :hook (org-mode . org-bullets-mode))
 
-;; Set default directory for Org files
+;; Set default directory for Org files - customize this path as needed
 (setq org-directory "~/org/")
 
 ;; Disable electric indentation globally - prevents unwanted auto-indenting
@@ -309,9 +302,8 @@
 ;; Set custom colors for the dashboard title
 (custom-set-variables)
 (custom-set-faces
- '(dashboard-banner-logo-title ((t (:inherit default :foreground "spring green")))))
+ '(dashboard-banner-logo-title ((t (:inherit default :foreground "#87e884")))))
 
-;; Dashboard - custom startup screen with quick access to files and projects
 (use-package dashboard
   :ensure t 
   :init
@@ -333,19 +325,19 @@
   
   ;; Configure dashboard sections and their item counts
   (setq dashboard-items '((recents . 5)      ;; 5 recent files
-			  (agenda . 5 )      ;; 5 upcoming agenda items  
-			  (bookmarks . 3)    ;; 3 bookmarks
-			  (projects . 3)     ;; 3 recent projects
-			  (registers . 3)))  ;; 3 stored registers
+              (agenda . 5 )      ;; 5 upcoming agenda items  
+              (bookmarks . 3)    ;; 3 bookmarks
+              (projects . 3)     ;; 3 recent projects
+              (registers . 3)))  ;; 3 stored registers
   :custom 
   ;; Customize section icons
   (dashboard-modify-heading-icons '((recents . "file-text")
-				    (bookmarks . "book")))
+                    (bookmarks . "book")))
   :config
   ;; Initialize dashboard after Emacs starts
   (dashboard-setup-startup-hook))
 
-;; Neotree - file tree sidebar for IDE-like experience
+;; File tree sidebar for IDE-like experience
 (use-package neotree
   :ensure t
   :after dashboard
@@ -383,7 +375,6 @@
 ;; Move backup files to trash instead of cluttering directories  
 (setq backup-directory-alist '((".*" . "~/.local/share/Trash/files/")))
 
-;; Vertico - modern completion interface
 (use-package vertico
   :ensure t
   :bind (:map vertico-map
@@ -396,7 +387,8 @@
   :custom
   (vertico-cycle t)  ;; Allow wrapping from bottom to top and vice versa
   :init
-  (vertico-mode))  ;; Enable globally
+  (vertico-mode)  ;; Enable globally
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)) ;; Removes path when shadowing
 
 ;; Keyboard shortcuts for text scaling
 (global-set-key (kbd "C-=") 'text-scale-increase)    ;; Make text larger
