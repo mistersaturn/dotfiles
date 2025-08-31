@@ -1,7 +1,7 @@
 #+auto_tangle: t
 #+title: Emacs Config
 #+author: Dean Smith
-#+date: 08/23/2025 - Last Modified: 08/30/2025
+#+date: 08/23/2025 - Last Modified: 08/31/2025
 #+description: Personal Emacs Config -- TREEMACS Version
 #+startup: showeverything
 #+property: header-args:emacs-lisp :tangle init.el
@@ -272,7 +272,7 @@ Provides popup help for keybinding discovery. When you press a prefix key (like 
         which-key-idle-delay 0.8                  ;; Show popup after 0.8 seconds
         which-key-max-description-length 25       ;; Truncate long descriptions
         which-key-allow-imprecise-window-fit t    ;; Allow flexible sizing
-        which-key-separator " 󰋇  "))                ;; Visual separator between key and description
+        which-key-separator " 󰋇  "))              ;; Visual separator between key and description
 #+end_src
 
 * Git Time Machine
@@ -454,7 +454,7 @@ Custom styling for the dashboard title.
 ;; Set custom colors for the dashboard title
 (custom-set-variables)
 (custom-set-faces
- '(dashboard-banner-logo-title ((t (:inherit default :foreground "spring green")))))
+ '(dashboard-banner-logo-title ((t (:inherit default :foreground "#87e884")))))
 #+end_src
 
 ** Dashboard    
@@ -561,7 +561,8 @@ Vertico provides a clean, minimal completion interface that enhances Emacs' buil
   :custom
   (vertico-cycle t)  ;; Allow wrapping from bottom to top and vice versa
   :init
-  (vertico-mode))  ;; Enable globally
+  (vertico-mode)  ;; Enable globally
+  (add-hook 'rfn-eshadow-update-overlay-hook #'vertico-directory-tidy)) ;; Removes path when shadowing
 #+end_src
 
 * Zooming
