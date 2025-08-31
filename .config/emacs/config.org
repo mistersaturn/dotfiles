@@ -253,7 +253,6 @@ Establishes SPC as the leader key (with M-SPC as fallback for non-Evil states), 
 #+end_src
 
 ** WhichKey
-** WhichKey
 Provides popup help for keybinding discovery. When you press a prefix key (like SPC), WhichKey shows available completions with descriptions, making the interface self-documenting.
 
 #+begin_src emacs-lisp
@@ -273,7 +272,7 @@ Provides popup help for keybinding discovery. When you press a prefix key (like 
         which-key-idle-delay 0.8                  ;; Show popup after 0.8 seconds
         which-key-max-description-length 25       ;; Truncate long descriptions
         which-key-allow-imprecise-window-fit t    ;; Allow flexible sizing
-        which-key-separator "  "))                ;; Visual separator between key and description
+        which-key-separator " 󰋇  "))                ;; Visual separator between key and description
 #+end_src
 
 * Git Time Machine
@@ -354,7 +353,7 @@ A completely custom modeline design that replaces Emacs' default status bar with
 ;; Format current time and date
 (defun treemacs-modeline--clock ()
   "Return formatted time string."
-  (format-time-string " %a 󰸗 %b %d  %I:%M %p"))
+  (format-time-string " %a %b %d  %I:%M %p"))
 
 ;; Define modeline segments as buffer-local variables
 (defvar-local treemacs-modeline-buffer-name
@@ -368,11 +367,11 @@ A completely custom modeline design that replaces Emacs' default status bar with
 ;; Assemble the complete modeline format
 (setq-default mode-line-format
       '("%e"  ;; Error indicator
-        "  ::  "  ;; Visual separator
+        "    "  ;; Visual separator
         treemacs-modeline-buffer-name
         " 󰚟 "  ;; Icon separator
         treemacs-modeline-major-mode
-        "   "
+        "   "
         mode-line-position  ;; Cursor position info
         "  "
         vc-mode  ;; Version control status
