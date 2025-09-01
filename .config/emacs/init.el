@@ -124,7 +124,9 @@
     ;; Direct access to configuration file for easy editing
     "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) 
             :wk "Open config file")
-    
+     
+    "g t" '(git-timemachine :wk "Git Time Machine") ;; Git Time Machine    
+
     "TAB TAB" '(comment-line :wk "Comment lines")  ;; Toggle line comments
     
     ;; Help system access - Emacs has excellent built-in documentation
@@ -407,6 +409,11 @@
                   (neotree-dir root)  ;; Set root directory
                   (other-window 1))   ;; Return focus to dashboard
                 (setq my/dashboard-neotree-opened t)))))
+
+(use-package vterm
+ :ensure t)
+(setq shell-file-name "/bin/bash"
+      vterm-max-scrollback 250)
 
 (use-package sudo-edit
  :ensure t
