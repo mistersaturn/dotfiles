@@ -149,7 +149,7 @@
     "b n" '(next-buffer :wk "Next buffer")             ;; Cycle to next buffer
     "b p" '(previous-buffer :wk "Previous buffer")     ;; Cycle to previous buffer  
     "b r" '(revert-buffer :wk "Reload buffer"))        ;; Refresh buffer from disk
-
+    
   ;; Evaluation Keybindings - Elisp code evaluation for interactive development
   (tree/leader-keys
     "e" '(:ignore t :wk "Evaluate")
@@ -157,7 +157,33 @@
     "e d" '(eval-defun :wk "Evaluate defun containing or after point")     ;; Run function definition
     "e e" '(eval-expression :wk "Evaluate an elisp expression")            ;; Interactive evaluation
     "e l" '(eval-last-sexp :wk "Evaluate elisp expression before point")   ;; Run expression before cursor
-    "e r" '(eval-region :wk "Evaluate elisp in region")))                  ;; Run selected region
+    "e r" '(eval-region :wk "Evaluate elisp in region"))                   ;; Run selected region
+
+  ;; Toggle Keybindings - Various toggles for things like line numbers and truncated lines
+  (tree/leader-keys
+    "t" '(:ignore t :wk "Toggle")
+    "t l" '(display-line-numbers-mode :wk "Toggle line numbers")           ;; Toggles line numbers on/off
+    "t t" '(visual-line-mode :wk "Toggle truncated lines"))                ;; Toggles line wrapping on/off
+
+  ;; Window Keybindings - Enables navigating buffers like a window manager
+  (tree/leader-keys
+    "w" '(:ignore t :wk "Windows")
+    ;; Window splits
+    "w c" '(evil-window-delete :wk "Close window")
+    "w n" '(evil-window-new :wk "New window")
+    "w s" '(evil-window-split :wk "Horizontal split window")
+    "w v" '(evil-window-vsplit :wk "Vertical split window")
+    ;; Window motions
+    "w h" '(evil-window-left :wk "Window left")
+    "w j" '(evil-window-down :wk "Window down")
+    "w k" '(evil-window-up :wk "Window up")
+    "w l" '(evil-window-right :wk "Window right")
+    "w w" '(evil-window-next :wk "Goto next window")
+    ;; Move Windows
+    "w H" '(buf-move-left :wk "Buffer move left")
+    "w J" '(buf-move-down :wk "Buffer move down")
+    "w K" '(buf-move-up :wk "Buffer move up")
+    "w L" '(buf-move-right :wk "Buffer move right")))
 
 (use-package which-key
   :ensure t
@@ -186,6 +212,20 @@
    ;; Vim-like navigation through Git history
    (evil-define-key 'normal git-timemachine-mode-map (kbd "C-j") 'git-timemachine-show-previous-revision)
    (evil-define-key 'normal git-timemachine-mode-map (kbd "C-k") 'git-timemachine-show-next-revision))
+
+(use-package hl-todo
+  :ensure t
+  :hook ((org-mode . hl-todo-mode)
+         (prog-mode . hl-todo-mode))
+  :config
+  (setq hl-todo-highlight-punctuation ":"
+        hl-todo-keyword-faces
+        `(("TODO"       warning bold)
+          ("FIXME"      error bold)
+          ("HACK"       font-lock-constant-face bold)
+          ("REVIEW"     font-lock-keyword-face bold)
+          ("NOTE"       success bold)
+          ("DEPRECATED" font-lock-doc-face bold))))
 
 (use-package marginalia
  :after vertico  ;; Load after Vertico completion framework
@@ -252,7 +292,7 @@
 ;; Assemble the complete modeline format
 (setq-default mode-line-format
       '("%e"  ;; Error indicator
-        "    "  ;; Visual separator
+        "      "  ;; Visual separator
         treemacs-modeline-buffer-name
         " 󰚟 "  ;; Icon separator
         treemacs-modeline-major-mode
@@ -367,6 +407,13 @@
                   (neotree-dir root)  ;; Set root directory
                   (other-window 1))   ;; Return focus to dashboard
                 (setq my/dashboard-neotree-opened t)))))
+
+(use-package sudo-edit
+ :ensure t
+ :config
+  (tree/leader-keys
+    "fu" '(sudo-edit-find-file :wk "Sudo find file")
+    "fU" '(sudo-edit :wk "Sudo edit file")))
 
 ;; Use system trash instead of permanent deletion - safety first!
 (setq delete-by-moving-to-trash t
