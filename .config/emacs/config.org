@@ -185,7 +185,9 @@ Establishes SPC as the leader key (with M-SPC as fallback for non-Evil states), 
     ;; Direct access to configuration file for easy editing
     "f c" '((lambda () (interactive) (find-file "~/.config/emacs/config.org")) 
             :wk "Open config file")
-    
+     
+    "g t" '(git-timemachine :wk "Git Time Machine") ;; Git Time Machine    
+
     "TAB TAB" '(comment-line :wk "Comment lines")  ;; Toggle line comments
     
     ;; Help system access - Emacs has excellent built-in documentation
@@ -542,6 +544,16 @@ Automatically opens a file tree sidebar when the dashboard loads, creating an ID
                   (neotree-dir root)  ;; Set root directory
                   (other-window 1))   ;; Return focus to dashboard
                 (setq my/dashboard-neotree-opened t)))))
+#+end_src
+
+* Shells and Terminals
+Sets up shells and terminal emulators in Emacs.
+** Vterm
+#+begin_src emacs-lisp
+  (use-package vterm
+   :ensure t)
+  (setq shell-file-name "/bin/bash"
+        vterm-max-scrollback 250)
 #+end_src
  
 * Sudo Edit
